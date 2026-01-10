@@ -111,8 +111,7 @@ export default function Header() {
           ))}
 
           {user?.role === 'free' && (
-            <a
-              href="/upgrade"
+            <Link to="/upgrade"
               style={{
                 color: 'white',
                 textDecoration: 'none',
@@ -134,13 +133,12 @@ export default function Header() {
               }}
             >
               ✨ Upgrade
-            </a>
+            </Link>
           )}
 
           {user?.role === 'admin' && (
             <>
-              <a
-                href="/admin"
+              <Link to="/admin"
                 style={{
                   color: '#ef4444',
                   textDecoration: 'none',
@@ -150,9 +148,8 @@ export default function Header() {
                 }}
               >
                 Admin
-              </a>
-              <a
-                href="/admin/dashboard"
+              </Link>
+              <Link to="/admin/dashboard"
                 style={{
                   color: '#ef4444',
                   textDecoration: 'none',
@@ -162,7 +159,7 @@ export default function Header() {
                 }}
               >
                 Dashboard
-              </a>
+              </Link>
             </>
           )}
         </nav>
@@ -175,8 +172,7 @@ export default function Header() {
         }}>
           {!user ? (
             <>
-              <a
-                href="/login"
+              <Link to="/login"
                 style={{
                   color: 'white',
                   textDecoration: 'none',
@@ -193,9 +189,8 @@ export default function Header() {
                 }}
               >
                 Login
-              </a>
-              <a
-                href="/register"
+              </Link>
+              <Link to="/register"
                 style={{
                   color: 'white',
                   textDecoration: 'none',
@@ -217,7 +212,7 @@ export default function Header() {
                 }}
               >
                 Sign Up
-              </a>
+              </Link>
             </>
           ) : (
             <div style={{
