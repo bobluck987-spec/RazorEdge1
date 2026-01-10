@@ -4,10 +4,12 @@ import { supabase } from '../lib/supabase';
 export default function AdminDashboard() {
   const [picks, setPicks] = useState([]);
   const [users, setUsers] = useState([]);
+  const [userProfiles, setUserProfiles] = useState({});
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('picks');
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [editingPick, setEditingPick] = useState(null);
+  const [selectedPickAudit, setSelectedPickAudit] = useState(null);
 
   const [formData, setFormData] = useState({
     sport: '',
@@ -41,11 +43,22 @@ export default function AdminDashboard() {
 
       setPicks(picksData || []);
       setUsers(usersData || []);
+
+      // Create a lookup map of user profiles
+      const profileMap = {};
+      (usersData || []).forEach(user => {
+        profileMap[user.id] = user;
+      });
+      setUserProfiles(profileMap);
     } catch (error) {
       console.error('Error loading data:', error);
     } finally {
       setLoading(false);
     }
+  };
+
+  const getUserEmail = (userId) => {
+    return userProfiles[userId]?.email || 'Unknown';
   };
 
   const handleCreatePick = async () => {
@@ -197,6 +210,43 @@ export default function AdminDashboard() {
 
   const premiumExposed = picks.filter((p) => p.access === 'premium' && p.exposed_to_free);
 
+  const rapidStatusChanges = picks.filter((p) => {
+    if (!p.audit_log) return false;
+    const logs = Array.isArray(p.audit_log) ? p.audit_log : [];
+    const statusChanges = logs.filter((log) => log.previous_status !== log.new_status);
+    return statusChanges.length >= 3;
+  });
+
+  const oddsManipulated = picks.filter((p) => {
+    if (!p.audit_log) return false;
+    const logs = Array.isArray(p.audit_log) ? p.audit_log : [];
+    return logs.some((log) => {
+      if (!log.changes?.odds_changed || !log.old_values?.odds) return false;
+      const oldOdds = log.old_values.odds;
+      const change = Math.abs(oldOdds - p.odds);
+      return change >= 50;
+    });
+  });
+
+  const retroactivePicks = picks.filter((p) => {
+    if (!p.game_date || !p.created_at) return false;
+    const gameDate = new Date(p.game_date);
+    const createdDate = new Date(p.created_at);
+    return createdDate > gameDate;
+  });
+
+  const accessLevelChanged = picks.filter((p) => {
+    if (!p.audit_log) return false;
+    const logs = Array.isArray(p.audit_log) ? p.audit_log : [];
+    return logs.some((log) => log.changes?.access_changed);
+  });
+
+  const orphanedPicks = picks.filter((p) => !p.created_by);
+
+  const totalIssues = gradedThenEdited.length + pendingTooLong.length + premiumExposed.length + 
+                     rapidStatusChanges.length + oddsManipulated.length + retroactivePicks.length + 
+                     accessLevelChanged.length + orphanedPicks.length;
+
   if (loading) {
     return <div style={{ padding: 40 }}>Loading admin dashboard...</div>;
   }
@@ -266,7 +316,7 @@ export default function AdminDashboard() {
           }}
         >
           Integrity Checks
-          {(gradedThenEdited.length + pendingTooLong.length + premiumExposed.length > 0) && (
+          {totalIssues > 0 && (
             <span style={{
               position: 'absolute',
               top: 5,
@@ -281,26 +331,35 @@ export default function AdminDashboard() {
               alignItems: 'center',
               justifyContent: 'center',
             }}>
-              {gradedThenEdited.length + pendingTooLong.length + premiumExposed.length}
+              {totalIssues}
             </span>
           )}
         </button>
       </div>
 
       {activeTab === 'integrity' && (
-        <div style={{ display: 'grid', gap: 30 }}>
+        <div style={{ display: 'grid', gap: 20 }}>
           <section style={{ background: '#fff3e0', padding: 20, borderRadius: 8, border: '2px solid #ff9800' }}>
             <h3 style={{ margin: '0 0 15px 0', color: '#e65100' }}>⚠️ Graded Then Edited ({gradedThenEdited.length})</h3>
+            <p style={{ fontSize: 14, color: '#666', marginBottom: 15 }}>
+              Picks that were graded but then had their details changed afterward
+            </p>
             {gradedThenEdited.length === 0 ? (
-              <p style={{ color: '#666' }}>No issues found. All graded picks remain unchanged.</p>
+              <p style={{ color: '#666' }}>✓ No issues found</p>
             ) : (
               <div style={{ display: 'grid', gap: 10 }}>
                 {gradedThenEdited.map((p) => (
                   <div key={p.id} style={{ background: 'white', padding: 15, borderRadius: 6 }}>
                     <strong>{p.matchup}</strong> - {p.status.toUpperCase()}
-                    <p style={{ margin: '5px 0 0', fontSize: 14, color: '#666' }}>
-                      This pick was graded but then edited afterward, which could appear suspicious.
+                    <p style={{ margin: '5px 0', fontSize: 13, color: '#666' }}>
+                      Created by: {getUserEmail(p.created_by)} | Graded by: {getUserEmail(p.graded_by)}
                     </p>
+                    <button
+                      onClick={() => setSelectedPickAudit(p)}
+                      style={{ marginTop: 8, padding: '4px 12px', background: '#1976d2', color: 'white', border: 'none', borderRadius: 4, cursor: 'pointer', fontSize: 12 }}
+                    >
+                      View Audit Log
+                    </button>
                   </div>
                 ))}
               </div>
@@ -309,28 +368,31 @@ export default function AdminDashboard() {
 
           <section style={{ background: '#ffebee', padding: 20, borderRadius: 8, border: '2px solid #f44336' }}>
             <h3 style={{ margin: '0 0 15px 0', color: '#c62828' }}>⏳ Pending Too Long ({pendingTooLong.length})</h3>
+            <p style={{ fontSize: 14, color: '#666', marginBottom: 15 }}>
+              Picks where the game ended 48+ hours ago but haven't been graded
+            </p>
             {pendingTooLong.length === 0 ? (
-              <p style={{ color: '#666' }}>All picks are graded in a timely manner.</p>
+              <p style={{ color: '#666' }}>✓ All picks graded on time</p>
             ) : (
               <div style={{ display: 'grid', gap: 10 }}>
                 {pendingTooLong.map((p) => (
                   <div key={p.id} style={{ background: 'white', padding: 15, borderRadius: 6 }}>
                     <strong>{p.matchup}</strong>
-                    <p style={{ margin: '5px 0 0', fontSize: 14, color: '#666' }}>
-                      Game date: {new Date(p.game_date).toLocaleDateString()} - Still pending after 48 hours
+                    <p style={{ margin: '5px 0', fontSize: 13, color: '#666' }}>
+                      Game: {new Date(p.game_date).toLocaleString()} | Created by: {getUserEmail(p.created_by)}
                     </p>
                     <div style={{ marginTop: 10, display: 'flex', gap: 8 }}>
                       <button
                         onClick={() => handleGradePick(p.id, 'win')}
-                        style={{ padding: '6px 12px', background: '#4caf50', color: 'white', border: 'none', borderRadius: 4, cursor: 'pointer' }}
+                        style={{ padding: '6px 12px', background: '#4caf50', color: 'white', border: 'none', borderRadius: 4, cursor: 'pointer', fontSize: 12 }}
                       >
-                        Grade as Win
+                        Win
                       </button>
                       <button
                         onClick={() => handleGradePick(p.id, 'loss')}
-                        style={{ padding: '6px 12px', background: '#f44336', color: 'white', border: 'none', borderRadius: 4, cursor: 'pointer' }}
+                        style={{ padding: '6px 12px', background: '#f44336', color: 'white', border: 'none', borderRadius: 4, cursor: 'pointer', fontSize: 12 }}
                       >
-                        Grade as Loss
+                        Loss
                       </button>
                     </div>
                   </div>
@@ -341,21 +403,216 @@ export default function AdminDashboard() {
 
           <section style={{ background: '#e3f2fd', padding: 20, borderRadius: 8, border: '2px solid #2196f3' }}>
             <h3 style={{ margin: '0 0 15px 0', color: '#1565c0' }}>🔓 Premium Exposure Risk ({premiumExposed.length})</h3>
+            <p style={{ fontSize: 14, color: '#666', marginBottom: 15 }}>
+              Premium picks that may have been exposed to free users
+            </p>
             {premiumExposed.length === 0 ? (
-              <p style={{ color: '#666' }}>All premium picks are properly protected.</p>
+              <p style={{ color: '#666' }}>✓ All premium content protected</p>
             ) : (
               <div style={{ display: 'grid', gap: 10 }}>
                 {premiumExposed.map((p) => (
                   <div key={p.id} style={{ background: 'white', padding: 15, borderRadius: 6 }}>
                     <strong>{p.matchup}</strong>
-                    <p style={{ margin: '5px 0 0', fontSize: 14, color: '#666' }}>
-                      This premium pick may have been accidentally exposed to free users.
+                    <p style={{ margin: '5px 0', fontSize: 13, color: '#666' }}>
+                      Created by: {getUserEmail(p.created_by)}
                     </p>
                   </div>
                 ))}
               </div>
             )}
           </section>
+
+          <section style={{ background: '#fce4ec', padding: 20, borderRadius: 8, border: '2px solid #e91e63' }}>
+            <h3 style={{ margin: '0 0 15px 0', color: '#880e4f' }}>⚡ Rapid Status Changes ({rapidStatusChanges.length})</h3>
+            <p style={{ fontSize: 14, color: '#666', marginBottom: 15 }}>
+              Picks graded 3+ times (potential manipulation)
+            </p>
+            {rapidStatusChanges.length === 0 ? (
+              <p style={{ color: '#666' }}>✓ No suspicious grading activity</p>
+            ) : (
+              <div style={{ display: 'grid', gap: 10 }}>
+                {rapidStatusChanges.map((p) => (
+                  <div key={p.id} style={{ background: 'white', padding: 15, borderRadius: 6 }}>
+                    <strong>{p.matchup}</strong> - Current: {p.status.toUpperCase()}
+                    <p style={{ margin: '5px 0', fontSize: 13, color: '#666' }}>
+                      Created by: {getUserEmail(p.created_by)} | Graded by: {getUserEmail(p.graded_by)}
+                    </p>
+                    <button
+                      onClick={() => setSelectedPickAudit(p)}
+                      style={{ marginTop: 8, padding: '4px 12px', background: '#1976d2', color: 'white', border: 'none', borderRadius: 4, cursor: 'pointer', fontSize: 12 }}
+                    >
+                      View History
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </section>
+
+          <section style={{ background: '#f3e5f5', padding: 20, borderRadius: 8, border: '2px solid #9c27b0' }}>
+            <h3 style={{ margin: '0 0 15px 0', color: '#4a148c' }}>📊 Odds Manipulation ({oddsManipulated.length})</h3>
+            <p style={{ fontSize: 14, color: '#666', marginBottom: 15 }}>
+              Picks where odds changed by 50+ points after posting
+            </p>
+            {oddsManipulated.length === 0 ? (
+              <p style={{ color: '#666' }}>✓ No significant odds changes</p>
+            ) : (
+              <div style={{ display: 'grid', gap: 10 }}>
+                {oddsManipulated.map((p) => (
+                  <div key={p.id} style={{ background: 'white', padding: 15, borderRadius: 6 }}>
+                    <strong>{p.matchup}</strong> - Current odds: {p.odds}
+                    <button
+                      onClick={() => setSelectedPickAudit(p)}
+                      style={{ marginLeft: 10, padding: '4px 12px', background: '#1976d2', color: 'white', border: 'none', borderRadius: 4, cursor: 'pointer', fontSize: 12 }}
+                    >
+                      View Changes
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </section>
+
+          <section style={{ background: '#e8eaf6', padding: 20, borderRadius: 8, border: '2px solid #3f51b5' }}>
+            <h3 style={{ margin: '0 0 15px 0', color: '#1a237e' }}>⏮️ Retroactive Picks ({retroactivePicks.length})</h3>
+            <p style={{ fontSize: 14, color: '#666', marginBottom: 15 }}>
+              Picks created after their game date (backdating)
+            </p>
+            {retroactivePicks.length === 0 ? (
+              <p style={{ color: '#666' }}>✓ All picks created before game time</p>
+            ) : (
+              <div style={{ display: 'grid', gap: 10 }}>
+                {retroactivePicks.map((p) => (
+                  <div key={p.id} style={{ background: 'white', padding: 15, borderRadius: 6 }}>
+                    <strong>{p.matchup}</strong>
+                    <p style={{ margin: '5px 0', fontSize: 13, color: '#666' }}>
+                      Game: {new Date(p.game_date).toLocaleString()} | Created: {new Date(p.created_at).toLocaleString()}
+                    </p>
+                    <p style={{ margin: '5px 0', fontSize: 13, color: '#666' }}>
+                      By: {getUserEmail(p.created_by)}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            )}
+          </section>
+
+          <section style={{ background: '#fff9c4', padding: 20, borderRadius: 8, border: '2px solid #fbc02d' }}>
+            <h3 style={{ margin: '0 0 15px 0', color: '#f57f17' }}>🔄 Access Level Changed ({accessLevelChanged.length})</h3>
+            <p style={{ fontSize: 14, color: '#666', marginBottom: 15 }}>
+              Picks that switched between free/premium after posting
+            </p>
+            {accessLevelChanged.length === 0 ? (
+              <p style={{ color: '#666' }}>✓ No access level changes</p>
+            ) : (
+              <div style={{ display: 'grid', gap: 10 }}>
+                {accessLevelChanged.map((p) => (
+                  <div key={p.id} style={{ background: 'white', padding: 15, borderRadius: 6 }}>
+                    <strong>{p.matchup}</strong> - Current: {p.access.toUpperCase()}
+                    <button
+                      onClick={() => setSelectedPickAudit(p)}
+                      style={{ marginLeft: 10, padding: '4px 12px', background: '#1976d2', color: 'white', border: 'none', borderRadius: 4, cursor: 'pointer', fontSize: 12 }}
+                    >
+                      View History
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </section>
+
+          <section style={{ background: '#efebe9', padding: 20, borderRadius: 8, border: '2px solid #795548' }}>
+            <h3 style={{ margin: '0 0 15px 0', color: '#3e2723' }}>👤 Orphaned Picks ({orphanedPicks.length})</h3>
+            <p style={{ fontSize: 14, color: '#666', marginBottom: 15 }}>
+              Picks with no creator (data integrity issue)
+            </p>
+            {orphanedPicks.length === 0 ? (
+              <p style={{ color: '#666' }}>✓ All picks have creators</p>
+            ) : (
+              <div style={{ display: 'grid', gap: 10 }}>
+                {orphanedPicks.map((p) => (
+                  <div key={p.id} style={{ background: 'white', padding: 15, borderRadius: 6 }}>
+                    <strong>{p.matchup}</strong>
+                    <p style={{ margin: '5px 0', fontSize: 13, color: '#666' }}>
+                      Created: {new Date(p.created_at).toLocaleString()}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            )}
+          </section>
+        </div>
+      )}
+
+      {selectedPickAudit && (
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
+          <div style={{ background: 'white', borderRadius: 12, padding: 30, maxWidth: 700, maxHeight: '80vh', overflow: 'auto', boxShadow: '0 10px 40px rgba(0,0,0,0.3)' }}>
+            <h2 style={{ marginTop: 0 }}>Audit Log: {selectedPickAudit.matchup}</h2>
+            
+            <div style={{ marginBottom: 20, padding: 15, background: '#f5f5f5', borderRadius: 6 }}>
+              <p style={{ margin: '5px 0' }}><strong>Created by:</strong> {getUserEmail(selectedPickAudit.created_by)}</p>
+              <p style={{ margin: '5px 0' }}><strong>Created at:</strong> {new Date(selectedPickAudit.created_at).toLocaleString()}</p>
+              {selectedPickAudit.graded_by && (
+                <>
+                  <p style={{ margin: '5px 0' }}><strong>Graded by:</strong> {getUserEmail(selectedPickAudit.graded_by)}</p>
+                  <p style={{ margin: '5px 0' }}><strong>Graded at:</strong> {new Date(selectedPickAudit.graded_at).toLocaleString()}</p>
+                </>
+              )}
+            </div>
+
+            <h3>Change History:</h3>
+            {!selectedPickAudit.audit_log || selectedPickAudit.audit_log.length === 0 ? (
+              <p>No changes recorded</p>
+            ) : (
+              <div style={{ display: 'grid', gap: 10 }}>
+                {(Array.isArray(selectedPickAudit.audit_log) ? selectedPickAudit.audit_log : []).map((log, idx) => (
+                  <div key={idx} style={{ padding: 15, background: '#f9f9f9', borderRadius: 6, border: '1px solid #e0e0e0' }}>
+                    <p style={{ margin: '0 0 8px', fontSize: 12, color: '#999' }}>
+                      {new Date(log.timestamp).toLocaleString()} - By: {getUserEmail(log.user_id)}
+                    </p>
+                    
+                    {log.previous_status !== log.new_status && (
+                      <p style={{ margin: '5px 0', fontSize: 14 }}>
+                        <strong>Status:</strong> {log.previous_status} → {log.new_status}
+                      </p>
+                    )}
+                    
+                    {log.changes && Object.keys(log.changes).some(k => log.changes[k]) && (
+                      <div style={{ marginTop: 8 }}>
+                        <strong style={{ fontSize: 13 }}>Changes made:</strong>
+                        <ul style={{ margin: '5px 0', paddingLeft: 20, fontSize: 13 }}>
+                          {log.changes.matchup_changed && <li>Matchup modified</li>}
+                          {log.changes.odds_changed && <li>Odds changed</li>}
+                          {log.changes.line_changed && <li>Line adjusted</li>}
+                          {log.changes.access_changed && <li>Access level changed</li>}
+                          {log.changes.sport_changed && <li>Sport changed</li>}
+                        </ul>
+                      </div>
+                    )}
+                    
+                    {log.old_values && Object.keys(log.old_values).length > 0 && (
+                      <div style={{ marginTop: 8, padding: 10, background: '#fff3e0', borderRadius: 4 }}>
+                        <strong style={{ fontSize: 12, color: '#e65100' }}>Previous values:</strong>
+                        <div style={{ fontSize: 12, marginTop: 5 }}>
+                          {log.old_values.matchup && <p style={{ margin: '3px 0' }}>Matchup: {log.old_values.matchup}</p>}
+                          {log.old_values.odds && <p style={{ margin: '3px 0' }}>Odds: {log.old_values.odds}</p>}
+                          {log.old_values.line && <p style={{ margin: '3px 0' }}>Line: {log.old_values.line}</p>}
+                          {log.old_values.access && <p style={{ margin: '3px 0' }}>Access: {log.old_values.access}</p>}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+            
+            <button
+              onClick={() => setSelectedPickAudit(null)}
+              style={{ marginTop: 20, padding: '10px 20px', background: '#757575', color: 'white', border: 'none', borderRadius: 6, cursor: 'pointer', width: '100%' }}
+            >
+              Close
+            </button>
+          </div>
         </div>
       )}
 
@@ -588,9 +845,21 @@ export default function AdminDashboard() {
                       </p>
                     )}
 
-                    <p style={{ margin: '10px 0 0', fontSize: 12, color: '#999' }}>
-                      Created: {new Date(pick.created_at).toLocaleString()}
-                    </p>
+                    <div style={{ margin: '10px 0 0', fontSize: 12, color: '#999' }}>
+                      <p style={{ margin: '3px 0' }}>Created: {new Date(pick.created_at).toLocaleString()} by {getUserEmail(pick.created_by)}</p>
+                      {pick.graded_by && (
+                        <p style={{ margin: '3px 0' }}>Graded: {new Date(pick.graded_at).toLocaleString()} by {getUserEmail(pick.graded_by)}</p>
+                      )}
+                    </div>
+
+                    {pick.audit_log && pick.audit_log.length > 0 && (
+                      <button
+                        onClick={() => setSelectedPickAudit(pick)}
+                        style={{ marginTop: 8, padding: '4px 12px', background: '#9e9e9e', color: 'white', border: 'none', borderRadius: 4, cursor: 'pointer', fontSize: 11 }}
+                      >
+                        View Audit Log ({pick.audit_log.length} changes)
+                      </button>
+                    )}
                   </div>
 
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 8, minWidth: 200 }}>
