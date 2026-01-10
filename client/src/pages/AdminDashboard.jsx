@@ -19,6 +19,7 @@ export default function AdminDashboard() {
     access: 'free',
     status: 'pending',
     notes: '',
+    game_date: '',
   });
 
   useEffect(() => {
@@ -30,11 +31,13 @@ export default function AdminDashboard() {
     try {
       const { data: picksData } = await supabase
         .from('picks')
-        .select('*');
+        .select('*')
+        .order('created_at', { ascending: false });
 
       const { data: usersData } = await supabase
         .from('user_profiles')
-        .select('*');
+        .select('*')
+        .order('created_at', { ascending: false });
 
       setPicks(picksData || []);
       setUsers(usersData || []);
@@ -47,7 +50,10 @@ export default function AdminDashboard() {
 
   const handleCreatePick = async () => {
     try {
-      const { error } = await supabase.from('picks').insert([formData]);
+      const { error } = await supabase.from('picks').insert([{
+        ...formData,
+        game_date: formData.game_date || null,
+      }]);
 
       if (error) throw error;
 
@@ -64,7 +70,10 @@ export default function AdminDashboard() {
     try {
       const { error } = await supabase
         .from('picks')
-        .update(formData)
+        .update({
+          ...formData,
+          game_date: formData.game_date || null,
+        })
         .eq('id', editingPick.id);
 
       if (error) throw error;
@@ -110,7 +119,7 @@ export default function AdminDashboard() {
 
   const handleChangeUserRole = async (userId, newRole) => {
     try {
-      const { error} = await supabase
+      const { error } = await supabase
         .from('user_profiles')
         .update({ role: newRole })
         .eq('id', userId);
@@ -136,6 +145,7 @@ export default function AdminDashboard() {
       access: pick.access,
       status: pick.status,
       notes: pick.notes || '',
+      game_date: pick.game_date ? new Date(pick.game_date).toISOString().slice(0, 16) : '',
     });
     setShowCreateForm(true);
   };
@@ -151,6 +161,7 @@ export default function AdminDashboard() {
       access: 'free',
       status: 'pending',
       notes: '',
+      game_date: '',
     });
   };
 
@@ -160,17 +171,38 @@ export default function AdminDashboard() {
     resetForm();
   };
 
+  // Analytics
   const totalPicks = picks.length;
   const wins = picks.filter((p) => p.status === 'win').length;
   const losses = picks.filter((p) => p.status === 'loss').length;
   const winRate = totalPicks > 0 ? ((wins / (wins + losses)) * 100).toFixed(1) : '0';
+
+  // Integrity checks
+  const gradedThenEdited = picks.filter((p) => {
+    if (!p.audit_log || p.status === 'pending') return false;
+    const logs = Array.isArray(p.audit_log) ? p.audit_log : [];
+    return logs.some((log) => {
+      const changes = log.changes || {};
+      return (changes.matchup_changed || changes.odds_changed || changes.line_changed);
+    });
+  });
+
+  const pendingTooLong = picks.filter((p) => {
+    if (p.status !== 'pending' || !p.game_date) return false;
+    const gameDate = new Date(p.game_date);
+    const now = new Date();
+    const hoursSinceGame = (now - gameDate) / (1000 * 60 * 60);
+    return hoursSinceGame > 48;
+  });
+
+  const premiumExposed = picks.filter((p) => p.access === 'premium' && p.exposed_to_free);
 
   if (loading) {
     return <div style={{ padding: 40 }}>Loading admin dashboard...</div>;
   }
 
   return (
-    <div style={{ padding: 20, maxWidth: 1200, margin: '0 auto' }}>
+    <div style={{ padding: 20, maxWidth: 1400, margin: '0 auto' }}>
       <h1 style={{ marginBottom: 30 }}>Admin Dashboard</h1>
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 20, marginBottom: 30 }}>
@@ -216,11 +248,116 @@ export default function AdminDashboard() {
             color: activeTab === 'users' ? 'white' : '#666',
             cursor: 'pointer',
             fontWeight: 'bold',
+            marginRight: 10,
           }}
         >
           Manage Users ({users.length})
         </button>
+        <button
+          onClick={() => setActiveTab('integrity')}
+          style={{
+            padding: '10px 20px',
+            border: 'none',
+            background: activeTab === 'integrity' ? '#1976d2' : 'transparent',
+            color: activeTab === 'integrity' ? 'white' : '#666',
+            cursor: 'pointer',
+            fontWeight: 'bold',
+            position: 'relative',
+          }}
+        >
+          Integrity Checks
+          {(gradedThenEdited.length + pendingTooLong.length + premiumExposed.length > 0) && (
+            <span style={{
+              position: 'absolute',
+              top: 5,
+              right: 5,
+              background: '#f44336',
+              color: 'white',
+              borderRadius: '50%',
+              width: 20,
+              height: 20,
+              fontSize: 12,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+              {gradedThenEdited.length + pendingTooLong.length + premiumExposed.length}
+            </span>
+          )}
+        </button>
       </div>
+
+      {activeTab === 'integrity' && (
+        <div style={{ display: 'grid', gap: 30 }}>
+          <section style={{ background: '#fff3e0', padding: 20, borderRadius: 8, border: '2px solid #ff9800' }}>
+            <h3 style={{ margin: '0 0 15px 0', color: '#e65100' }}>⚠️ Graded Then Edited ({gradedThenEdited.length})</h3>
+            {gradedThenEdited.length === 0 ? (
+              <p style={{ color: '#666' }}>No issues found. All graded picks remain unchanged.</p>
+            ) : (
+              <div style={{ display: 'grid', gap: 10 }}>
+                {gradedThenEdited.map((p) => (
+                  <div key={p.id} style={{ background: 'white', padding: 15, borderRadius: 6 }}>
+                    <strong>{p.matchup}</strong> - {p.status.toUpperCase()}
+                    <p style={{ margin: '5px 0 0', fontSize: 14, color: '#666' }}>
+                      This pick was graded but then edited afterward, which could appear suspicious.
+                    </p>
+                  </div>
+                ))}
+              </div>
+            )}
+          </section>
+
+          <section style={{ background: '#ffebee', padding: 20, borderRadius: 8, border: '2px solid #f44336' }}>
+            <h3 style={{ margin: '0 0 15px 0', color: '#c62828' }}>⏳ Pending Too Long ({pendingTooLong.length})</h3>
+            {pendingTooLong.length === 0 ? (
+              <p style={{ color: '#666' }}>All picks are graded in a timely manner.</p>
+            ) : (
+              <div style={{ display: 'grid', gap: 10 }}>
+                {pendingTooLong.map((p) => (
+                  <div key={p.id} style={{ background: 'white', padding: 15, borderRadius: 6 }}>
+                    <strong>{p.matchup}</strong>
+                    <p style={{ margin: '5px 0 0', fontSize: 14, color: '#666' }}>
+                      Game date: {new Date(p.game_date).toLocaleDateString()} - Still pending after 48 hours
+                    </p>
+                    <div style={{ marginTop: 10, display: 'flex', gap: 8 }}>
+                      <button
+                        onClick={() => handleGradePick(p.id, 'win')}
+                        style={{ padding: '6px 12px', background: '#4caf50', color: 'white', border: 'none', borderRadius: 4, cursor: 'pointer' }}
+                      >
+                        Grade as Win
+                      </button>
+                      <button
+                        onClick={() => handleGradePick(p.id, 'loss')}
+                        style={{ padding: '6px 12px', background: '#f44336', color: 'white', border: 'none', borderRadius: 4, cursor: 'pointer' }}
+                      >
+                        Grade as Loss
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </section>
+
+          <section style={{ background: '#e3f2fd', padding: 20, borderRadius: 8, border: '2px solid #2196f3' }}>
+            <h3 style={{ margin: '0 0 15px 0', color: '#1565c0' }}>🔓 Premium Exposure Risk ({premiumExposed.length})</h3>
+            {premiumExposed.length === 0 ? (
+              <p style={{ color: '#666' }}>All premium picks are properly protected.</p>
+            ) : (
+              <div style={{ display: 'grid', gap: 10 }}>
+                {premiumExposed.map((p) => (
+                  <div key={p.id} style={{ background: 'white', padding: 15, borderRadius: 6 }}>
+                    <strong>{p.matchup}</strong>
+                    <p style={{ margin: '5px 0 0', fontSize: 14, color: '#666' }}>
+                      This premium pick may have been accidentally exposed to free users.
+                    </p>
+                  </div>
+                ))}
+              </div>
+            )}
+          </section>
+        </div>
+      )}
 
       {activeTab === 'picks' && (
         <div>
@@ -304,6 +441,16 @@ export default function AdminDashboard() {
                     value={formData.odds}
                     onChange={(e) => setFormData({ ...formData, odds: parseInt(e.target.value) })}
                     placeholder="-110, +150"
+                    style={{ width: '100%', padding: 8, borderRadius: 4, border: '1px solid #ccc' }}
+                  />
+                </div>
+
+                <div>
+                  <label style={{ display: 'block', marginBottom: 5, fontWeight: 'bold' }}>Game Date/Time</label>
+                  <input
+                    type="datetime-local"
+                    value={formData.game_date}
+                    onChange={(e) => setFormData({ ...formData, game_date: e.target.value })}
                     style={{ width: '100%', padding: 8, borderRadius: 4, border: '1px solid #ccc' }}
                   />
                 </div>
@@ -428,6 +575,12 @@ export default function AdminDashboard() {
                       {pick.line && ` ${pick.line}`} • {pick.odds > 0 ? '+' : ''}
                       {pick.odds}
                     </p>
+
+                    {pick.game_date && (
+                      <p style={{ margin: '5px 0', fontSize: 14, color: '#666' }}>
+                        Game: {new Date(pick.game_date).toLocaleString()}
+                      </p>
+                    )}
 
                     {pick.notes && (
                       <p style={{ margin: '10px 0', fontStyle: 'italic', color: '#555' }}>
