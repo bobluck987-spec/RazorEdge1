@@ -1,102 +1,58 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
+import { supabase } from '../lib/supabase';
 
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
-  const [token, setToken] = useState(null);
   const [loading, setLoading] = useState(true);
-  
-  // Restore session on refresh
+
   useEffect(() => {
-    try {
-      // Check if localStorage is available
-      if (typeof window !== 'undefined' && window.localStorage) {
-        const storedToken = localStorage.getItem('auth_token');
-        const storedUser = localStorage.getItem('auth_user');
-        
-        if (storedToken && storedUser) {
-          setToken(storedToken);
-          setUser(JSON.parse(storedUser));
-        }
-      }
-    } catch (error) {
-      console.error('Error accessing localStorage:', error);
-    } finally {
+    // Get initial session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null);
       setLoading(false);
-    }
+    });
+
+    // Listen for auth changes
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+    });
+
+    return () => subscription.unsubscribe();
   }, []);
-  
+
   const login = async (email, password) => {
-    const res = await fetch('/api/auth/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password }),
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
     });
-    
-    if (!res.ok) {
-      throw new Error('Invalid credentials');
-    }
-    
-    const data = await res.json();
-    
-    setToken(data.token);
-    setUser(data.user);
-    
-    try {
-      if (typeof window !== 'undefined' && window.localStorage) {
-        localStorage.setItem('auth_token', data.token);
-        localStorage.setItem('auth_user', JSON.stringify(data.user));
-      }
-    } catch (error) {
-      console.error('Error saving to localStorage:', error);
-    }
+
+    if (error) throw error;
+    return data;
   };
-  
+
   const register = async (email, password) => {
-    const res = await fetch('/api/auth/register', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password }),
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
     });
-    
-    if (!res.ok) {
-      throw new Error('Registration failed');
-    }
-    
-    const data = await res.json();
-    
-    setToken(data.token);
-    setUser(data.user);
-    
-    try {
-      if (typeof window !== 'undefined' && window.localStorage) {
-        localStorage.setItem('auth_token', data.token);
-        localStorage.setItem('auth_user', JSON.stringify(data.user));
-      }
-    } catch (error) {
-      console.error('Error saving to localStorage:', error);
-    }
+
+    if (error) throw error;
+    return data;
   };
-  
-  const logout = () => {
-    setUser(null);
-    setToken(null);
-    try {
-      if (typeof window !== 'undefined' && window.localStorage) {
-        localStorage.removeItem('auth_token');
-        localStorage.removeItem('auth_user');
-      }
-    } catch (error) {
-      console.error('Error clearing localStorage:', error);
-    }
+
+  const logout = async () => {
+    const { error } = await supabase.auth.signOut();
+    if (error) throw error;
   };
-  
+
   return (
     <AuthContext.Provider
       value={{
         user,
-        token,
         loading,
         login,
         register,
@@ -109,5 +65,9 @@ export function AuthProvider({ children }) {
 }
 
 export function useAuth() {
-  return useContext(AuthContext);
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error('useAuth must be used within AuthProvider');
+  }
+  return context;
 }

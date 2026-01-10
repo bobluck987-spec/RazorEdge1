@@ -1,11 +1,11 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
+import { supabase } from '../lib/supabase';
 import { useAuth } from './AuthContext';
 
 export const PickContext = createContext();
 
 export function PickProvider({ children }) {
-  const { token } = useAuth();
-  
+  const { user } = useAuth();
   const [picks, setPicks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -13,18 +13,19 @@ export function PickProvider({ children }) {
   const fetchPicks = async () => {
     try {
       setLoading(true);
-      const res = await fetch('/api/picks', {
-        headers: token ? { Authorization: `Bearer ${token}` } : {},
-      });
+      setError(null);
       
-      if (!res.ok) {
-        throw new Error('Failed to fetch picks');
-      }
+      const { data, error: fetchError } = await supabase
+        .from('picks')
+        .select('*')
+        .order('created_at', { ascending: false });
       
-      const data = await res.json();
-      setPicks(data);
+      if (fetchError) throw fetchError;
+      
+      setPicks(data || []);
     } catch (err) {
       setError(err.message);
+      console.error('Error fetching picks:', err);
     } finally {
       setLoading(false);
     }
@@ -32,8 +33,7 @@ export function PickProvider({ children }) {
   
   useEffect(() => {
     fetchPicks();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // Remove token from dependencies - fetch once on mount
+  }, [user]);
   
   return (
     <PickContext.Provider
