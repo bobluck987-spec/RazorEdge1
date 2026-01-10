@@ -5,25 +5,38 @@ import { useAuth } from '../context/AuthContext.jsx';
 const Register = () => {
   const { register } = useAuth();
   const navigate = useNavigate();
-
+  
   const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-
-  const handleSubmit = (e) => {
+  const [loading, setLoading] = useState(false);
+  
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
-    if (!email) {
-      setError('Email is required');
+    setError('');
+    
+    if (!email || !password) {
+      setError('Email and password are required');
       return;
     }
-
-    // TEMP: All new users start as FREE
-    // Backend will control role later
-    register(email);
-
-    navigate('/');
+    
+    if (password.length < 6) {
+      setError('Password must be at least 6 characters');
+      return;
+    }
+    
+    setLoading(true);
+    
+    try {
+      await register(email, password);
+      navigate('/');
+    } catch (err) {
+      setError(err.message || 'Registration failed');
+    } finally {
+      setLoading(false);
+    }
   };
-
+  
   return (
     <div className="page-container">
       <h1>Create Account</h1>
@@ -38,10 +51,24 @@ const Register = () => {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="user@example.com"
+            required
           />
         </label>
 
-        <button type="submit">Register</button>
+        <label>
+          Password
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="At least 6 characters"
+            required
+          />
+        </label>
+
+        <button type="submit" disabled={loading}>
+          {loading ? 'Creating account...' : 'Register'}
+        </button>
       </form>
 
       <p style={{ marginTop: '1rem' }}>
