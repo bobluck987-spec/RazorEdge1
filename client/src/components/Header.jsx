@@ -45,7 +45,7 @@ export default function Header() {
         justifyContent: 'space-between'
       }}>
         {/* Logo */}
-        <div style={{
+        <Link to="/" style={{
           display: 'flex',
           alignItems: 'center',
           gap: 12,
@@ -76,7 +76,7 @@ export default function Header() {
           }}>
             RazorEdge
           </span>
-        </div>
+        </Link>
 
         {/* Desktop Navigation */}
         <nav style={{
@@ -88,9 +88,9 @@ export default function Header() {
           }
         }}>
           {navLinks.map(link => (
-            <a
+            <Link
               key={link.path}
-              href={link.path}
+              to={link.path}
               style={{
                 color: 'white',
                 textDecoration: 'none',
@@ -108,7 +108,7 @@ export default function Header() {
               }}
             >
               {link.label}
-            </a>
+            </Link>
           ))}
 
           {user?.role === 'free' && (
@@ -262,7 +262,7 @@ export default function Header() {
                 {user.email[0].toUpperCase()}
               </div>
               <button
-                onClick={() => console.log('logout')} // Replace with: onClick={logout}
+                onClick={logout}
                 style={{
                   padding: '8px 16px',
                   background: 'rgba(255, 255, 255, 0.1)',
