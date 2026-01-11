@@ -36,7 +36,7 @@ export default function Picks() {
   return pick.access === 'premium' && (!user || user.role === 'free');
   };
 
-  if (loading) {
+  //if (loading) {
   return (
     <div style={{
       background: 'linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%)',
@@ -442,4 +442,4 @@ export default function Picks() {
       </div>
     </div>
   );
-}}
+}
