@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { usePickContext } from '../context/PickContext';
+import { useAuth } from '../context/AuthContext';
 
 export default function Picks() {
   const { picks: allPicks, loading } = usePickContext();
