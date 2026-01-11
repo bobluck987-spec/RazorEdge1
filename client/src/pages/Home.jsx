@@ -1,296 +1,501 @@
 import React, { useState, useEffect } from 'react';
 
 export default function Home() {
-  const [scrollY, setScrollY] = useState(0);
-  const [currentStat, setCurrentStat] = useState(0);
-
-  useEffect(() => {
-    const handleScroll = () => setScrollY(window.scrollY);
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  const [activeFeature, setActiveFeature] = useState(0);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentStat((prev) => (prev + 1) % 4);
-    }, 3000);
+      setActiveFeature((prev) => (prev + 1) % 4);
+    }, 4000);
     return () => clearInterval(interval);
   }, []);
 
   const stats = [
-    { label: 'Win Rate', value: '67.8%', subtext: '+5.2% this month', color: 'from-green-500 to-emerald-600' },
-    { label: 'Total Picks', value: '1,247', subtext: '+124 this week', color: 'from-blue-500 to-cyan-600' },
-    { label: 'Avg ROI', value: '15.3%', subtext: '+2.1% vs last season', color: 'from-purple-500 to-pink-600' },
-    { label: 'Active Users', value: '8.4K', subtext: '+1.2K this month', color: 'from-orange-500 to-red-600' },
+    { value: '67.8%', label: 'Win Rate', color: '#10b981' },
+    { value: '1,247', label: 'Total Picks', color: '#3b82f6' },
+    { value: '15.3%', label: 'Avg ROI', color: '#8b5cf6' },
+    { value: '8.4K', label: 'Members', color: '#f59e0b' },
   ];
 
   const features = [
-    {
-      icon: '🎯',
-      title: 'Data-Driven Picks',
-      description: 'Advanced algorithms analyze 50+ data points per game to find the highest value plays',
-      gradient: 'from-blue-500/20 to-cyan-500/20'
-    },
-    {
-      icon: '📊',
-      title: 'Real-Time Analytics',
-      description: 'Live dashboards track performance, trends, and market movements as they happen',
-      gradient: 'from-purple-500/20 to-pink-500/20'
-    },
-    {
-      icon: '🏆',
-      title: 'Proven Track Record',
-      description: 'Transparent history with every pick graded and verified. No hiding losses.',
-      gradient: 'from-green-500/20 to-emerald-500/20'
-    },
-    {
-      icon: '⚡',
-      title: 'Instant Notifications',
-      description: 'Get alerted the moment new picks drop or when critical line movements occur',
-      gradient: 'from-orange-500/20 to-red-500/20'
-    }
-  ];
-
-  const testimonials = [
-    {
-      text: "Best sports betting service I've used. Up 40% since joining.",
-      author: "Mike T.",
-      role: "Premium Member",
-      image: "M"
-    },
-    {
-      text: "The analytics are insane. Finally understand the edge.",
-      author: "Sarah K.",
-      role: "Premium Member",
-      image: "S"
-    },
-    {
-      text: "ROI speaks for itself. This is the real deal.",
-      author: "James R.",
-      role: "Premium Member",
-      image: "J"
-    }
+    { icon: '🎯', title: 'Expert Picks', desc: 'Verified 67.8% win rate' },
+    { icon: '📊', title: 'Live Analytics', desc: 'Real-time performance tracking' },
+    { icon: '⚡', title: 'Instant Alerts', desc: 'Never miss a winning pick' },
+    { icon: '🏆', title: 'Proven Results', desc: 'Transparent track record' },
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-dark-950 via-dark-900 to-dark-950 text-white overflow-hidden">
+    <div style={{
+      minHeight: '100vh',
+      background: '#0a0e27',
+      color: 'white',
+      paddingBottom: 80,
+      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+    }}>
       
-      {/* Animated Background Elements */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/4 -left-32 w-96 h-96 bg-primary-500/10 rounded-full blur-3xl animate-pulse-slow" />
-        <div className="absolute bottom-1/4 -right-32 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl animate-pulse-slow" style={{ animationDelay: '2s' }} />
-        <div 
-          className="absolute inset-0 opacity-30"
-          style={{
-            backgroundImage: `
-              linear-gradient(rgba(59, 130, 246, 0.03) 1px, transparent 1px),
-              linear-gradient(90deg, rgba(59, 130, 246, 0.03) 1px, transparent 1px)
-            `,
-            backgroundSize: '60px 60px',
-            transform: `translateY(${scrollY * 0.3}px)`
+      {/* Hero Section - Mobile Optimized */}
+      <section style={{
+        padding: '80px 20px 60px',
+        textAlign: 'center',
+        background: 'linear-gradient(180deg, #0a0e27 0%, #1a1f3a 100%)',
+        position: 'relative',
+        overflow: 'hidden'
+      }}>
+        
+        {/* Animated Background Glow */}
+        <div style={{
+          position: 'absolute',
+          top: '-50%',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          width: '300px',
+          height: '300px',
+          background: 'radial-gradient(circle, rgba(59, 130, 246, 0.15) 0%, transparent 70%)',
+          animation: 'pulse 4s ease-in-out infinite',
+          pointerEvents: 'none'
+        }} />
+
+        {/* Live Badge */}
+        <div style={{
+          display: 'inline-flex',
+          alignItems: 'center',
+          gap: 8,
+          padding: '12px 24px',
+          background: 'rgba(16, 185, 129, 0.1)',
+          border: '1px solid rgba(16, 185, 129, 0.3)',
+          borderRadius: 50,
+          marginBottom: 32,
+          position: 'relative',
+          zIndex: 1
+        }}>
+          <span style={{
+            width: 8,
+            height: 8,
+            background: '#10b981',
+            borderRadius: '50%',
+            animation: 'pulse 2s ease-in-out infinite',
+            boxShadow: '0 0 10px #10b981'
+          }} />
+          <span style={{
+            fontSize: 13,
+            fontWeight: 700,
+            color: '#10b981',
+            letterSpacing: '0.5px'
+          }}>
+            LIVE • 67.8% WIN RATE
+          </span>
+        </div>
+
+        {/* Headline */}
+        <h1 style={{
+          fontSize: 'clamp(36px, 10vw, 56px)',
+          fontWeight: 900,
+          lineHeight: 1.1,
+          marginBottom: 20,
+          position: 'relative',
+          zIndex: 1
+        }}>
+          <div style={{
+            background: 'linear-gradient(135deg, #fff 0%, #94a3b8 100%)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            marginBottom: 8
+          }}>
+            Premium Sports Picks
+          </div>
+          <div style={{
+            background: 'linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent'
+          }}>
+            That Actually Win
+          </div>
+        </h1>
+
+        <p style={{
+          fontSize: 18,
+          color: '#94a3b8',
+          lineHeight: 1.6,
+          marginBottom: 32,
+          maxWidth: 500,
+          margin: '0 auto 32px',
+          position: 'relative',
+          zIndex: 1
+        }}>
+          Join 8,400+ winners using data-driven picks to beat the sportsbooks
+        </p>
+
+        {/* CTA Buttons */}
+        <div style={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 12,
+          maxWidth: 400,
+          margin: '0 auto',
+          position: 'relative',
+          zIndex: 1
+        }}>
+          <button style={{
+            padding: '18px 32px',
+            background: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)',
+            border: 'none',
+            borderRadius: 12,
+            fontSize: 17,
+            fontWeight: 700,
+            color: 'white',
+            cursor: 'pointer',
+            boxShadow: '0 10px 30px rgba(59, 130, 246, 0.4)',
+            transition: 'all 0.3s ease',
+            width: '100%'
           }}
-        />
-      </div>
+          onTouchStart={(e) => {
+            e.currentTarget.style.transform = 'scale(0.98)';
+          }}
+          onTouchEnd={(e) => {
+            e.currentTarget.style.transform = 'scale(1)';
+          }}>
+            Start Winning Today →
+          </button>
 
-      {/* Hero Section */}
-      <section className="relative pt-32 pb-20 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
-          
-          {/* Badge */}
-          <div className="flex justify-center mb-8 animate-float">
-            <div className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-primary-500/20 to-purple-500/20 backdrop-blur-xl border border-primary-500/30 rounded-full">
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-primary-500"></span>
-              </span>
-              <span className="text-sm font-bold bg-gradient-to-r from-primary-300 to-purple-300 bg-clip-text text-transparent">
-                67.8% WIN RATE THIS SEASON
-              </span>
-            </div>
-          </div>
-
-          {/* Main Headline */}
-          <h1 className="text-center mb-6">
-            <span className="block text-5xl sm:text-6xl lg:text-7xl font-black mb-4 bg-gradient-to-r from-white via-gray-100 to-gray-300 bg-clip-text text-transparent leading-tight">
-              Win More.
-            </span>
-            <span className="block text-5xl sm:text-6xl lg:text-7xl font-black bg-gradient-to-r from-primary-400 via-purple-400 to-pink-400 bg-clip-text text-transparent leading-tight">
-              Bet Smarter.
-            </span>
-          </h1>
-
-          <p className="text-center text-xl sm:text-2xl text-gray-400 max-w-3xl mx-auto mb-12 leading-relaxed">
-            Join <span className="text-primary-400 font-bold">8,400+ winning bettors</span> who trust RazorEdge for 
-            data-driven picks, expert analysis, and consistent profits.
-          </p>
-
-          {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
-            <button className="group relative px-8 py-4 bg-gradient-to-r from-primary-500 to-primary-600 rounded-xl font-bold text-lg overflow-hidden shadow-2xl shadow-primary-500/50 hover:shadow-primary-500/70 transform hover:scale-105 transition-all duration-300">
-              <span className="relative z-10">Start Winning Today</span>
-              <div className="absolute inset-0 bg-gradient-to-r from-primary-600 to-purple-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-            </button>
-            
-            <button className="px-8 py-4 bg-white/5 backdrop-blur-xl border-2 border-white/20 rounded-xl font-bold text-lg hover:bg-white/10 hover:border-white/30 transform hover:scale-105 transition-all duration-300">
-              View Free Picks
-            </button>
-          </div>
-
-          {/* Rotating Stats Display */}
-          <div className="max-w-4xl mx-auto">
-            <div className="glass-card p-8 relative overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-br opacity-50" style={{
-                background: `linear-gradient(135deg, var(--tw-gradient-stops))`,
-                '--tw-gradient-from': stats[currentStat].color.split(' ')[0].replace('from-', ''),
-                '--tw-gradient-to': stats[currentStat].color.split(' ')[1].replace('to-', '')
-              }} />
-              
-              <div className="relative z-10">
-                <div className="text-center">
-                  <div className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-2">
-                    {stats[currentStat].label}
-                  </div>
-                  <div className={`text-6xl sm:text-7xl font-black mb-2 bg-gradient-to-r ${stats[currentStat].color} bg-clip-text text-transparent`}>
-                    {stats[currentStat].value}
-                  </div>
-                  <div className="text-sm text-gray-300 font-semibold">
-                    {stats[currentStat].subtext}
-                  </div>
-                </div>
-
-                {/* Stat Indicators */}
-                <div className="flex justify-center gap-2 mt-6">
-                  {stats.map((_, idx) => (
-                    <button
-                      key={idx}
-                      onClick={() => setCurrentStat(idx)}
-                      className={`h-2 rounded-full transition-all duration-300 ${
-                        currentStat === idx ? 'w-8 bg-white' : 'w-2 bg-white/30'
-                      }`}
-                    />
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
+          <button style={{
+            padding: '18px 32px',
+            background: 'rgba(255, 255, 255, 0.05)',
+            border: '2px solid rgba(255, 255, 255, 0.1)',
+            borderRadius: 12,
+            fontSize: 17,
+            fontWeight: 700,
+            color: 'white',
+            cursor: 'pointer',
+            transition: 'all 0.3s ease',
+            width: '100%'
+          }}
+          onTouchStart={(e) => {
+            e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)';
+          }}
+          onTouchEnd={(e) => {
+            e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)';
+          }}>
+            View Free Picks
+          </button>
         </div>
       </section>
 
-      {/* Features Section */}
-      <section className="relative py-24 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl sm:text-5xl font-black mb-4 bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">
-              The RazorEdge Advantage
-            </h2>
-            <p className="text-xl text-gray-400 max-w-2xl mx-auto">
-              Premium tools and insights that give you an unfair advantage over the sportsbooks
+      {/* Stats Carousel - Mobile Optimized */}
+      <section style={{
+        padding: '40px 20px',
+        background: 'rgba(0, 0, 0, 0.2)'
+      }}>
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(2, 1fr)',
+          gap: 16,
+          maxWidth: 600,
+          margin: '0 auto'
+        }}>
+          {stats.map((stat, idx) => (
+            <div key={idx} style={{
+              background: 'rgba(255, 255, 255, 0.03)',
+              backdropFilter: 'blur(10px)',
+              border: '1px solid rgba(255, 255, 255, 0.08)',
+              borderRadius: 16,
+              padding: 20,
+              textAlign: 'center',
+              transition: 'all 0.3s ease'
+            }}
+            onTouchStart={(e) => {
+              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.06)';
+              e.currentTarget.style.transform = 'scale(0.98)';
+            }}
+            onTouchEnd={(e) => {
+              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.03)';
+              e.currentTarget.style.transform = 'scale(1)';
+            }}>
+              <div style={{
+                fontSize: 32,
+                fontWeight: 900,
+                color: stat.color,
+                marginBottom: 4
+              }}>
+                {stat.value}
+              </div>
+              <div style={{
+                fontSize: 13,
+                color: '#64748b',
+                fontWeight: 600,
+                textTransform: 'uppercase',
+                letterSpacing: '0.5px'
+              }}>
+                {stat.label}
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Features Swiper - Mobile Optimized */}
+      <section style={{
+        padding: '60px 0'
+      }}>
+        <h2 style={{
+          fontSize: 32,
+          fontWeight: 900,
+          textAlign: 'center',
+          marginBottom: 40,
+          padding: '0 20px',
+          background: 'linear-gradient(135deg, #fff 0%, #94a3b8 100%)',
+          WebkitBackgroundClip: 'text',
+          WebkitTextFillColor: 'transparent'
+        }}>
+          Why RazorEdge?
+        </h2>
+
+        {/* Feature Card - Auto-rotating */}
+        <div style={{
+          maxWidth: 400,
+          margin: '0 auto',
+          padding: '0 20px'
+        }}>
+          <div style={{
+            background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%)',
+            border: '1px solid rgba(59, 130, 246, 0.2)',
+            borderRadius: 20,
+            padding: 32,
+            textAlign: 'center',
+            minHeight: 240,
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            transition: 'all 0.5s ease',
+            position: 'relative',
+            overflow: 'hidden'
+          }}>
+            <div style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              height: 4,
+              background: 'linear-gradient(90deg, #3b82f6, #8b5cf6)',
+              borderRadius: '20px 20px 0 0'
+            }}>
+              <div style={{
+                height: '100%',
+                background: 'white',
+                borderRadius: 'inherit',
+                width: `${((activeFeature + 1) / 4) * 100}%`,
+                transition: 'width 0.5s linear'
+              }} />
+            </div>
+
+            <div style={{
+              fontSize: 64,
+              marginBottom: 20,
+              animation: 'float 3s ease-in-out infinite'
+            }}>
+              {features[activeFeature].icon}
+            </div>
+
+            <h3 style={{
+              fontSize: 24,
+              fontWeight: 800,
+              marginBottom: 12,
+              color: 'white'
+            }}>
+              {features[activeFeature].title}
+            </h3>
+
+            <p style={{
+              fontSize: 16,
+              color: '#94a3b8',
+              lineHeight: 1.6
+            }}>
+              {features[activeFeature].desc}
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-6">
-            {features.map((feature, idx) => (
-              <div
+          {/* Dot Indicators */}
+          <div style={{
+            display: 'flex',
+            justifyContent: 'center',
+            gap: 8,
+            marginTop: 24
+          }}>
+            {features.map((_, idx) => (
+              <button
                 key={idx}
-                className="group glass-card p-8 hover:bg-white/10 transform hover:-translate-y-2 transition-all duration-300 cursor-pointer relative overflow-hidden"
-              >
-                <div className={`absolute inset-0 bg-gradient-to-br ${feature.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-300`} />
-                
-                <div className="relative z-10">
-                  <div className="text-5xl mb-4 transform group-hover:scale-110 transition-transform duration-300">
-                    {feature.icon}
-                  </div>
-                  <h3 className="text-2xl font-bold mb-3 text-white">
-                    {feature.title}
-                  </h3>
-                  <p className="text-gray-400 leading-relaxed">
-                    {feature.description}
-                  </p>
-                </div>
-              </div>
+                onClick={() => setActiveFeature(idx)}
+                style={{
+                  width: activeFeature === idx ? 24 : 8,
+                  height: 8,
+                  borderRadius: 4,
+                  border: 'none',
+                  background: activeFeature === idx ? '#3b82f6' : 'rgba(255, 255, 255, 0.2)',
+                  cursor: 'pointer',
+                  transition: 'all 0.3s ease',
+                  padding: 0
+                }}
+              />
             ))}
           </div>
         </div>
       </section>
 
-      {/* Social Proof */}
-      <section className="relative py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-transparent via-primary-950/20 to-transparent">
-        <div className="max-w-5xl mx-auto">
-          <h2 className="text-4xl sm:text-5xl font-black text-center mb-16 bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">
-            Trusted by Winners
+      {/* Social Proof - Mobile Stack */}
+      <section style={{
+        padding: '60px 20px',
+        background: 'rgba(59, 130, 246, 0.05)'
+      }}>
+        <h2 style={{
+          fontSize: 32,
+          fontWeight: 900,
+          textAlign: 'center',
+          marginBottom: 40,
+          background: 'linear-gradient(135deg, #fff 0%, #94a3b8 100%)',
+          WebkitBackgroundClip: 'text',
+          WebkitTextFillColor: 'transparent'
+        }}>
+          Trusted by Winners
+        </h2>
+
+        <div style={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 16,
+          maxWidth: 400,
+          margin: '0 auto'
+        }}>
+          {[
+            { text: "Up 40% since joining. Best investment.", author: "Mike T.", role: "Premium" },
+            { text: "The analytics are incredible. Finally get the edge.", author: "Sarah K.", role: "Premium" },
+            { text: "ROI speaks for itself. This is real.", author: "James R.", role: "Premium" }
+          ].map((t, idx) => (
+            <div key={idx} style={{
+              background: 'rgba(255, 255, 255, 0.03)',
+              backdropFilter: 'blur(10px)',
+              border: '1px solid rgba(255, 255, 255, 0.08)',
+              borderRadius: 16,
+              padding: 20
+            }}>
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 12,
+                marginBottom: 12
+              }}>
+                <div style={{
+                  width: 40,
+                  height: 40,
+                  borderRadius: '50%',
+                  background: 'linear-gradient(135deg, #3b82f6, #8b5cf6)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: 18,
+                  fontWeight: 900
+                }}>
+                  {t.author[0]}
+                </div>
+                <div>
+                  <div style={{ fontSize: 14, fontWeight: 700, color: 'white' }}>{t.author}</div>
+                  <div style={{ fontSize: 12, color: '#3b82f6', fontWeight: 600 }}>{t.role} Member</div>
+                </div>
+              </div>
+              <p style={{
+                fontSize: 15,
+                color: '#cbd5e1',
+                fontStyle: 'italic',
+                lineHeight: 1.5,
+                margin: 0
+              }}>
+                "{t.text}"
+              </p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Final CTA - Mobile Sticky-ish */}
+      <section style={{
+        padding: '60px 20px',
+        background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%)'
+      }}>
+        <div style={{
+          maxWidth: 400,
+          margin: '0 auto',
+          textAlign: 'center'
+        }}>
+          <h2 style={{
+            fontSize: 36,
+            fontWeight: 900,
+            marginBottom: 16,
+            background: 'linear-gradient(135deg, #fff 0%, #cbd5e1 100%)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent'
+          }}>
+            Start Winning Today
           </h2>
+          <p style={{
+            fontSize: 16,
+            color: '#94a3b8',
+            marginBottom: 32,
+            lineHeight: 1.6
+          }}>
+            Join premium and get instant access to expert picks, live analytics, and our winning community.
+          </p>
+          
+          <button style={{
+            padding: '20px 40px',
+            background: 'linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%)',
+            border: 'none',
+            borderRadius: 12,
+            fontSize: 18,
+            fontWeight: 700,
+            color: 'white',
+            cursor: 'pointer',
+            boxShadow: '0 15px 40px rgba(59, 130, 246, 0.4)',
+            width: '100%',
+            marginBottom: 16
+          }}
+          onTouchStart={(e) => {
+            e.currentTarget.style.transform = 'scale(0.98)';
+          }}
+          onTouchEnd={(e) => {
+            e.currentTarget.style.transform = 'scale(1)';
+          }}>
+            Upgrade to Premium
+          </button>
 
-          <div className="grid md:grid-cols-3 gap-6">
-            {testimonials.map((testimonial, idx) => (
-              <div key={idx} className="glass-card p-6 hover:bg-white/10 transform hover:-translate-y-2 transition-all duration-300">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary-500 to-purple-500 flex items-center justify-center text-xl font-bold">
-                    {testimonial.image}
-                  </div>
-                  <div>
-                    <div className="font-bold text-white">{testimonial.author}</div>
-                    <div className="text-xs text-primary-400 font-semibold">{testimonial.role}</div>
-                  </div>
-                </div>
-                <p className="text-gray-300 italic leading-relaxed">
-                  "{testimonial.text}"
-                </p>
-              </div>
-            ))}
-          </div>
+          <p style={{
+            fontSize: 13,
+            color: '#64748b',
+            margin: 0
+          }}>
+            30-day money-back guarantee • Cancel anytime
+          </p>
         </div>
       </section>
 
-      {/* Final CTA */}
-      <section className="relative py-32 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-4xl mx-auto text-center">
-          <div className="glass-card p-12 relative overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-br from-primary-500/20 to-purple-500/20" />
-            
-            <div className="relative z-10">
-              <h2 className="text-4xl sm:text-5xl font-black mb-6 bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
-                Ready to Start Winning?
-              </h2>
-              <p className="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
-                Join premium today and get instant access to expert picks, advanced analytics, and our winning community.
-              </p>
-              
-              <button className="group relative px-10 py-5 bg-gradient-to-r from-primary-500 to-purple-600 rounded-xl font-bold text-xl overflow-hidden shadow-2xl shadow-primary-500/50 hover:shadow-primary-500/70 transform hover:scale-105 transition-all duration-300 mb-4">
-                <span className="relative z-10">Upgrade to Premium</span>
-                <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-pink-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-              </button>
-              
-              <p className="text-sm text-gray-400">
-                30-day money-back guarantee • Cancel anytime • No commitments
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
+      <style>{`
+        @keyframes pulse {
+          0%, 100% { opacity: 0.8; transform: scale(1); }
+          50% { opacity: 1; transform: scale(1.05); }
+        }
 
-      {/* Trust Badges */}
-      <section className="relative py-12 px-4 border-t border-white/5">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex flex-wrap justify-center items-center gap-8 text-gray-500">
-            <div className="flex items-center gap-2">
-              <span className="text-2xl">🔒</span>
-              <span className="text-sm font-semibold">Secure Payments</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="text-2xl">✓</span>
-              <span className="text-sm font-semibold">Verified Track Record</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="text-2xl">⚡</span>
-              <span className="text-sm font-semibold">Instant Access</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="text-2xl">💎</span>
-              <span className="text-sm font-semibold">Premium Support</span>
-            </div>
-          </div>
-        </div>
-      </section>
+        @keyframes float {
+          0%, 100% { transform: translateY(0px); }
+          50% { transform: translateY(-10px); }
+        }
+
+        * {
+          -webkit-tap-highlight-color: transparent;
+        }
+
+        button {
+          -webkit-appearance: none;
+          -moz-appearance: none;
+          appearance: none;
+        }
+      `}</style>
     </div>
   );
 }
