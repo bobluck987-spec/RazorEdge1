@@ -105,7 +105,9 @@ export default function Analytics() {
   }
   
   return (
-    <div style={{ padding: 40 }}>
+    <div style={{ padding: 40,
+    paddingBottom: 80 // Add this for mobile tabs
+    }}>
       <h2>Performance Summary</h2>
       <ul>
         <li>Total Picks: {summary.total}</li>

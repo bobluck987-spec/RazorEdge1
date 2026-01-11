@@ -43,7 +43,8 @@ export default function Picks() {
       minHeight: '100vh',
       color: 'white',
       padding: '40px 20px',
-      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+      paddingBottom: 80 // Add this for mobile tabs
     }}>
       <div style={{ maxWidth: 1200, margin: '0 auto' }}>
         {/* Header */}

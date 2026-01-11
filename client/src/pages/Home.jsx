@@ -70,7 +70,8 @@ export default function Home() {
       background: 'linear-gradient(135deg, #0a0e27 0%, #1a1f3a 50%, #0a0e27 100%)',
       minHeight: '100vh',
       color: 'white',
-      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+      paddingBottom: 80 // Add this for mobile tabs
     }}>
       {/* Hero Section */}
       <div style={{
