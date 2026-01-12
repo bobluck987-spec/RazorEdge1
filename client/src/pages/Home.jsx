@@ -1,40 +1,32 @@
-import React, { useState, useEffect } from 'react';
-import { TrendingUp, BarChart2, Shield, Users, ArrowRight, CheckCircle } from 'lucide-react';
+import React from 'react';
+import { TrendingUp, Target, BarChart2, CheckCircle, ArrowRight, Trophy } from 'lucide-react';
 
 export default function Home() {
-  const [currentStat, setCurrentStat] = useState(0);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentStat((prev) => (prev + 1) % 4);
-    }, 4000);
-    return () => clearInterval(interval);
-  }, []);
-
-  const stats = [
-    { value: '67.8%', label: 'Win Rate', sublabel: 'Against the spread' },
-    { value: '1,247', label: 'Picks Graded', sublabel: 'Full transparency' },
-    { value: '+15.3%', label: 'Avg ROI', sublabel: 'Verified results' },
-    { value: '8,400+', label: 'Active Members', sublabel: 'Growing daily' },
+  const recentWins = [
+    { team: 'Eagles +3.5', result: 'WON', profit: '+$220', date: 'Jan 10' },
+    { team: 'Lakers ML +145', result: 'WON', profit: '+$290', date: 'Jan 9' },
+    { team: 'Chiefs -7', result: 'WON', profit: '+$200', date: 'Jan 8' },
+    { team: '49ers o45.5', result: 'WON', profit: '+$180', date: 'Jan 7' },
   ];
 
   return (
     <div style={{
       minHeight: '100vh',
-      background: '#FAFAFA',
+      background: '#000000',
       paddingBottom: 100,
-      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif'
+      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
     }}>
       
-      {/* Hero Section */}
+      {/* DARK: Hero Section */}
       <section style={{
-        background: 'linear-gradient(180deg, #FFFFFF 0%, #F5F7FA 100%)',
-        padding: '60px 24px 80px',
+        background: '#000000',
+        padding: '80px 0 100px',
         position: 'relative'
       }}>
         <div style={{
           maxWidth: 1200,
-          margin: '0 auto'
+          margin: '0 auto',
+          padding: '0 24px'
         }}>
           
           {/* Trust Badge */}
@@ -47,16 +39,16 @@ export default function Home() {
               display: 'inline-flex',
               alignItems: 'center',
               gap: 8,
-              padding: '12px 24px',
-              background: '#E8F5E9',
+              padding: '10px 20px',
+              background: 'rgba(239, 68, 68, 0.1)',
               borderRadius: 100,
-              border: '1px solid #4CAF50'
+              border: '1px solid rgba(239, 68, 68, 0.3)'
             }}>
-              <CheckCircle style={{ width: 18, height: 18, color: '#2E7D32' }} />
+              <CheckCircle style={{ width: 18, height: 18, color: '#EF4444' }} />
               <span style={{
                 fontSize: 14,
                 fontWeight: 700,
-                color: '#2E7D32',
+                color: '#EF4444',
                 letterSpacing: '0.3px'
               }}>
                 Verified 67.8% Win Rate
@@ -64,76 +56,79 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Main Headline */}
+          {/* Headline with Color Contrast */}
           <h1 style={{
-            fontSize: 'clamp(36px, 8vw, 56px)',
-            fontWeight: 800,
+            fontSize: 'clamp(36px, 8vw, 64px)',
+            fontWeight: 900,
             textAlign: 'center',
-            lineHeight: 1.2,
-            color: '#1A1A1A',
+            lineHeight: 1.1,
             marginBottom: 24,
             letterSpacing: '-0.02em'
           }}>
-            Expert Sports Picks.<br />
-            Human Analysis.
+            <span style={{ color: '#FFFFFF' }}>
+              Beat the Sportsbooks.
+            </span>
+            <br />
+            <span style={{ color: '#EF4444' }}>
+              Keep the Profit.
+            </span>
           </h1>
 
           <p style={{
             fontSize: 20,
-            color: '#616161',
+            color: '#A3A3A3',
             textAlign: 'center',
             maxWidth: 700,
             margin: '0 auto 48px',
-            lineHeight: 1.6,
-            fontWeight: 400
+            lineHeight: 1.6
           }}>
-            We identify market inefficiencies and exploit undervalued underdogs. 
-            No algorithms. Just sharp analysis and proven results.
+            Expert analysis. Market inefficiencies. Undervalued underdogs. 
+            <strong style={{ color: '#FFFFFF' }}> No algorithms—just sharp picks that win.</strong>
           </p>
 
-          {/* Primary CTA */}
+          {/* Primary CTAs */}
           <div style={{
             display: 'flex',
             flexDirection: 'column',
             gap: 16,
             maxWidth: 400,
-            margin: '0 auto 60px'
+            margin: '0 auto'
           }}>
             <button style={{
               width: '100%',
               padding: '20px 32px',
-              background: '#2563EB',
-              color: 'white',
+              background: '#EF4444',
+              color: '#FFFFFF',
               border: 'none',
               borderRadius: 12,
               fontSize: 18,
-              fontWeight: 700,
+              fontWeight: 800,
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               gap: 12,
-              boxShadow: '0 4px 16px rgba(37, 99, 235, 0.24)',
+              boxShadow: '0 4px 20px rgba(239, 68, 68, 0.4)',
               transition: 'all 0.2s ease'
             }}
             onTouchStart={(e) => {
               e.currentTarget.style.transform = 'scale(0.98)';
-              e.currentTarget.style.boxShadow = '0 2px 8px rgba(37, 99, 235, 0.24)';
+              e.currentTarget.style.background = '#DC2626';
             }}
             onTouchEnd={(e) => {
               e.currentTarget.style.transform = 'scale(1)';
-              e.currentTarget.style.boxShadow = '0 4px 16px rgba(37, 99, 235, 0.24)';
+              e.currentTarget.style.background = '#EF4444';
             }}>
-              Get Started Today
+              Start Winning Today
               <ArrowRight style={{ width: 20, height: 20 }} />
             </button>
 
             <button style={{
               width: '100%',
               padding: '20px 32px',
-              background: 'white',
-              color: '#2563EB',
-              border: '2px solid #2563EB',
+              background: 'transparent',
+              color: '#FFFFFF',
+              border: '2px solid #404040',
               borderRadius: 12,
               fontSize: 18,
               fontWeight: 700,
@@ -141,170 +136,262 @@ export default function Home() {
               transition: 'all 0.2s ease'
             }}
             onTouchStart={(e) => {
-              e.currentTarget.style.background = '#F5F7FA';
+              e.currentTarget.style.borderColor = '#525252';
+              e.currentTarget.style.background = '#0A0A0A';
             }}
             onTouchEnd={(e) => {
-              e.currentTarget.style.background = 'white';
+              e.currentTarget.style.borderColor = '#404040';
+              e.currentTarget.style.background = 'transparent';
             }}>
               View Free Picks
             </button>
           </div>
-
-          {/* Stats Showcase */}
-          <div style={{
-            maxWidth: 600,
-            margin: '0 auto',
-            background: 'white',
-            borderRadius: 16,
-            padding: 32,
-            boxShadow: '0 2px 16px rgba(0, 0, 0, 0.06)',
-            border: '1px solid #E0E0E0'
-          }}>
-            <div style={{
-              textAlign: 'center',
-              marginBottom: 24
-            }}>
-              <div style={{
-                fontSize: 56,
-                fontWeight: 900,
-                color: '#2563EB',
-                marginBottom: 8,
-                letterSpacing: '-0.02em'
-              }}>
-                {stats[currentStat].value}
-              </div>
-              <div style={{
-                fontSize: 18,
-                fontWeight: 700,
-                color: '#1A1A1A',
-                marginBottom: 4
-              }}>
-                {stats[currentStat].label}
-              </div>
-              <div style={{
-                fontSize: 14,
-                color: '#757575'
-              }}>
-                {stats[currentStat].sublabel}
-              </div>
-            </div>
-
-            <div style={{
-              display: 'flex',
-              gap: 8,
-              justifyContent: 'center'
-            }}>
-              {stats.map((_, idx) => (
-                <button
-                  key={idx}
-                  onClick={() => setCurrentStat(idx)}
-                  style={{
-                    width: currentStat === idx ? 32 : 8,
-                    height: 8,
-                    borderRadius: 4,
-                    border: 'none',
-                    background: currentStat === idx ? '#2563EB' : '#E0E0E0',
-                    cursor: 'pointer',
-                    transition: 'all 0.3s ease',
-                    padding: 0
-                  }}
-                />
-              ))}
-            </div>
-          </div>
         </div>
       </section>
 
-      {/* Value Proposition */}
+      {/* LIGHT: Recent Big Hits + Stats */}
       <section style={{
-        padding: '80px 24px',
-        background: 'white'
+        background: '#FFFFFF',
+        padding: '80px 0'
       }}>
         <div style={{
           maxWidth: 1200,
-          margin: '0 auto'
+          margin: '0 auto',
+          padding: '0 24px'
         }}>
+          
+          {/* Recent Wins */}
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: 12,
+            marginBottom: 40
+          }}>
+            <Trophy style={{ width: 28, height: 28, color: '#EF4444' }} />
+            <h2 style={{
+              fontSize: 32,
+              fontWeight: 800,
+              color: '#000000',
+              margin: 0
+            }}>
+              Recent Big Hits
+            </h2>
+          </div>
+
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
+            gap: 16,
+            marginBottom: 80
+          }}>
+            {recentWins.map((win, idx) => (
+              <div
+                key={idx}
+                style={{
+                  background: '#FAFAFA',
+                  border: '1px solid #E5E5E5',
+                  borderRadius: 12,
+                  padding: 20,
+                  position: 'relative',
+                  overflow: 'hidden'
+                }}
+              >
+                <div style={{
+                  position: 'absolute',
+                  top: 0,
+                  right: 0,
+                  padding: '6px 12px',
+                  background: '#10B981',
+                  borderBottomLeftRadius: 8,
+                  fontSize: 12,
+                  fontWeight: 900,
+                  color: 'white'
+                }}>
+                  {win.result}
+                </div>
+
+                <div style={{
+                  fontSize: 18,
+                  fontWeight: 700,
+                  color: '#000000',
+                  marginBottom: 8,
+                  marginTop: 12
+                }}>
+                  {win.team}
+                </div>
+
+                <div style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center'
+                }}>
+                  <span style={{
+                    fontSize: 24,
+                    fontWeight: 900,
+                    color: '#10B981'
+                  }}>
+                    {win.profit}
+                  </span>
+                  <span style={{
+                    fontSize: 14,
+                    color: '#737373'
+                  }}>
+                    {win.date}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Track Record Stats */}
           <h2 style={{
             fontSize: 36,
             fontWeight: 800,
             textAlign: 'center',
-            color: '#1A1A1A',
-            marginBottom: 16,
-            letterSpacing: '-0.01em'
+            color: '#000000',
+            marginBottom: 16
           }}>
-            Our Edge
+            Proven Track Record
           </h2>
-          
+
           <p style={{
             fontSize: 18,
-            color: '#616161',
+            color: '#737373',
             textAlign: 'center',
-            maxWidth: 600,
-            margin: '0 auto 64px',
-            lineHeight: 1.6
+            marginBottom: 48
           }}>
-            We specialize in finding value where the market is wrong
+            Real results. Full transparency. Every pick graded.
           </p>
 
           <div style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
             gap: 24
           }}>
             {[
-              {
-                icon: <TrendingUp style={{ width: 32, height: 32, color: '#2563EB' }} />,
-                title: 'Market Analysis',
-                description: 'We identify when public perception creates mispriced lines and spreads'
-              },
-              {
-                icon: <BarChart2 style={{ width: 32, height: 32, color: '#2563EB' }} />,
-                title: 'Spread Performance',
-                description: 'Track teams that consistently over or underperform against expectations'
-              },
-              {
-                icon: <Shield style={{ width: 32, height: 32, color: '#2563EB' }} />,
-                title: 'Underdog Value',
-                description: 'Focus on finding overlooked underdogs with real winning potential'
-              },
-              {
-                icon: <Users style={{ width: 32, height: 32, color: '#2563EB' }} />,
-                title: 'Human Expertise',
-                description: 'No bots. Real analysts who understand the nuances of each game'
-              }
-            ].map((item, idx) => (
+              { label: 'All-Time Win Rate', value: '67.8%', sublabel: 'Against the spread' },
+              { label: 'Total Picks Graded', value: '1,247', sublabel: 'Complete history' },
+              { label: 'Average ROI', value: '+15.3%', sublabel: 'Verified returns' },
+              { label: 'Last 30 Days', value: '24-16', sublabel: '60% win rate' },
+            ].map((stat, idx) => (
               <div
                 key={idx}
                 style={{
                   background: '#FAFAFA',
                   padding: 32,
                   borderRadius: 12,
-                  border: '1px solid #E0E0E0',
-                  transition: 'all 0.3s ease'
-                }}
-                onTouchStart={(e) => {
-                  e.currentTarget.style.background = 'white';
-                  e.currentTarget.style.boxShadow = '0 4px 16px rgba(0, 0, 0, 0.08)';
-                }}
-                onTouchEnd={(e) => {
-                  e.currentTarget.style.background = '#FAFAFA';
-                  e.currentTarget.style.boxShadow = 'none';
+                  border: '1px solid #E5E5E5',
+                  textAlign: 'center'
                 }}
               >
-                <div style={{ marginBottom: 20 }}>
+                <div style={{
+                  fontSize: 48,
+                  fontWeight: 900,
+                  color: '#EF4444',
+                  marginBottom: 8,
+                  letterSpacing: '-0.02em'
+                }}>
+                  {stat.value}
+                </div>
+                <div style={{
+                  fontSize: 16,
+                  fontWeight: 700,
+                  color: '#000000',
+                  marginBottom: 4
+                }}>
+                  {stat.label}
+                </div>
+                <div style={{
+                  fontSize: 14,
+                  color: '#737373'
+                }}>
+                  {stat.sublabel}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* DARK: Value Proposition */}
+      <section style={{
+        background: '#000000',
+        padding: '80px 0'
+      }}>
+        <div style={{
+          maxWidth: 1200,
+          margin: '0 auto',
+          padding: '0 24px'
+        }}>
+          <h2 style={{
+            fontSize: 36,
+            fontWeight: 800,
+            textAlign: 'center',
+            color: '#FFFFFF',
+            marginBottom: 16
+          }}>
+            How We Find Value
+          </h2>
+
+          <p style={{
+            fontSize: 18,
+            color: '#A3A3A3',
+            textAlign: 'center',
+            maxWidth: 700,
+            margin: '0 auto 64px',
+            lineHeight: 1.6
+          }}>
+            We specialize in identifying market inefficiencies and exploiting undervalued opportunities
+          </p>
+
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+            gap: 32
+          }}>
+            {[
+              {
+                icon: <Target style={{ width: 32, height: 32, color: '#EF4444' }} />,
+                title: 'Market Inefficiencies',
+                description: 'We identify when public perception creates mispriced lines. Teams get overvalued or undervalued based on narratives, not performance.'
+              },
+              {
+                icon: <TrendingUp style={{ width: 32, height: 32, color: '#EF4444' }} />,
+                title: 'Spread Analysis',
+                description: 'Track teams that consistently over or underperform vs. expectations. Historical spread performance reveals hidden value.'
+              },
+              {
+                icon: <BarChart2 style={{ width: 32, height: 32, color: '#EF4444' }} />,
+                title: 'Underdog Focus',
+                description: 'Many of our best picks are overlooked underdogs. The market often misprices teams with real winning potential.'
+              }
+            ].map((item, idx) => (
+              <div key={idx} style={{ textAlign: 'center' }}>
+                <div style={{
+                  width: 64,
+                  height: 64,
+                  background: '#0A0A0A',
+                  border: '1px solid #262626',
+                  borderRadius: 12,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  margin: '0 auto 20px'
+                }}>
                   {item.icon}
                 </div>
                 <h3 style={{
                   fontSize: 20,
                   fontWeight: 700,
-                  color: '#1A1A1A',
+                  color: '#FFFFFF',
                   marginBottom: 12
                 }}>
                   {item.title}
                 </h3>
                 <p style={{
                   fontSize: 15,
-                  color: '#616161',
+                  color: '#A3A3A3',
                   lineHeight: 1.6,
                   margin: 0
                 }}>
@@ -316,241 +403,67 @@ export default function Home() {
         </div>
       </section>
 
-      {/* How It Works */}
+      {/* DARK: Final CTA */}
       <section style={{
-        padding: '80px 24px',
-        background: '#F5F7FA'
+        background: '#000000',
+        padding: '80px 0',
+        borderTop: '1px solid #262626'
       }}>
         <div style={{
-          maxWidth: 800,
-          margin: '0 auto'
-        }}>
-          <h2 style={{
-            fontSize: 36,
-            fontWeight: 800,
-            textAlign: 'center',
-            color: '#1A1A1A',
-            marginBottom: 64,
-            letterSpacing: '-0.01em'
-          }}>
-            How It Works
-          </h2>
-
-          <div style={{
-            display: 'flex',
-            flexDirection: 'column',
-            gap: 48
-          }}>
-            {[
-              {
-                number: '1',
-                title: 'Expert Analysis',
-                description: 'Our team analyzes market trends, team performance vs. spread, and identifies mispriced lines'
-              },
-              {
-                number: '2',
-                title: 'Value Identification',
-                description: 'We focus on games where public perception differs from actual team capability'
-              },
-              {
-                number: '3',
-                title: 'Underdog Focus',
-                description: 'Many of our best picks are undervalued underdogs that the market has overlooked'
-              },
-              {
-                number: '4',
-                title: 'Transparent Results',
-                description: 'Every pick is graded and tracked. We show wins and losses—total transparency'
-              }
-            ].map((step, idx) => (
-              <div
-                key={idx}
-                style={{
-                  display: 'flex',
-                  gap: 24,
-                  alignItems: 'flex-start'
-                }}
-              >
-                <div style={{
-                  flexShrink: 0,
-                  width: 48,
-                  height: 48,
-                  borderRadius: '50%',
-                  background: '#2563EB',
-                  color: 'white',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontSize: 20,
-                  fontWeight: 900
-                }}>
-                  {step.number}
-                </div>
-                <div>
-                  <h3 style={{
-                    fontSize: 22,
-                    fontWeight: 700,
-                    color: '#1A1A1A',
-                    marginBottom: 8
-                  }}>
-                    {step.title}
-                  </h3>
-                  <p style={{
-                    fontSize: 16,
-                    color: '#616161',
-                    lineHeight: 1.6,
-                    margin: 0
-                  }}>
-                    {step.description}
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Social Proof */}
-      <section style={{
-        padding: '80px 24px',
-        background: 'white'
-      }}>
-        <div style={{
-          maxWidth: 800,
-          margin: '0 auto'
-        }}>
-          <h2 style={{
-            fontSize: 36,
-            fontWeight: 800,
-            textAlign: 'center',
-            color: '#1A1A1A',
-            marginBottom: 48,
-            letterSpacing: '-0.01em'
-          }}>
-            What Our Members Say
-          </h2>
-
-          <div style={{
-            display: 'flex',
-            flexDirection: 'column',
-            gap: 24
-          }}>
-            {[
-              {
-                quote: "Up 40% since joining. The underdog picks are where the real value is.",
-                author: "Mike T.",
-                role: "Premium Member, 6 months"
-              },
-              {
-                quote: "Finally understand why certain picks work. Human analysis makes all the difference.",
-                author: "Sarah K.",
-                role: "Premium Member, 4 months"
-              },
-              {
-                quote: "The transparency is refreshing. They show every pick, win or lose.",
-                author: "James R.",
-                role: "Premium Member, 8 months"
-              }
-            ].map((testimonial, idx) => (
-              <div
-                key={idx}
-                style={{
-                  background: '#FAFAFA',
-                  padding: 28,
-                  borderRadius: 12,
-                  border: '1px solid #E0E0E0',
-                  borderLeft: '4px solid #2563EB'
-                }}
-              >
-                <p style={{
-                  fontSize: 16,
-                  color: '#1A1A1A',
-                  lineHeight: 1.6,
-                  marginBottom: 16,
-                  fontStyle: 'italic'
-                }}>
-                  "{testimonial.quote}"
-                </p>
-                <div>
-                  <div style={{
-                    fontSize: 15,
-                    fontWeight: 700,
-                    color: '#1A1A1A'
-                  }}>
-                    {testimonial.author}
-                  </div>
-                  <div style={{
-                    fontSize: 14,
-                    color: '#757575'
-                  }}>
-                    {testimonial.role}
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Final CTA */}
-      <section style={{
-        padding: '80px 24px',
-        background: 'linear-gradient(180deg, #2563EB 0%, #1D4ED8 100%)',
-        color: 'white'
-      }}>
-        <div style={{
-          maxWidth: 600,
+          maxWidth: 700,
           margin: '0 auto',
+          padding: '0 24px',
           textAlign: 'center'
         }}>
           <h2 style={{
             fontSize: 40,
-            fontWeight: 800,
+            fontWeight: 900,
             marginBottom: 16,
+            color: '#FFFFFF',
             letterSpacing: '-0.01em'
           }}>
-            Ready to Start Winning?
+            Join 8,400+ Winning Bettors
           </h2>
           
           <p style={{
             fontSize: 18,
-            opacity: 0.9,
+            color: '#A3A3A3',
             marginBottom: 40,
             lineHeight: 1.6
           }}>
-            Join 8,400+ members who trust our expert analysis and proven track record
+            Get expert picks, full transparency, and proven results. Start winning today.
           </p>
 
           <button style={{
-            width: '100%',
-            maxWidth: 400,
-            margin: '0 auto',
-            padding: '24px 40px',
-            background: 'white',
-            color: '#2563EB',
+            padding: '24px 48px',
+            background: '#EF4444',
+            color: '#FFFFFF',
             border: 'none',
             borderRadius: 12,
             fontSize: 20,
-            fontWeight: 700,
+            fontWeight: 800,
             cursor: 'pointer',
-            boxShadow: '0 8px 24px rgba(0, 0, 0, 0.15)',
-            transition: 'all 0.2s ease'
+            boxShadow: '0 8px 24px rgba(239, 68, 68, 0.4)',
+            transition: 'all 0.2s ease',
+            marginBottom: 24
           }}
           onTouchStart={(e) => {
             e.currentTarget.style.transform = 'scale(0.98)';
+            e.currentTarget.style.background = '#DC2626';
           }}
           onTouchEnd={(e) => {
             e.currentTarget.style.transform = 'scale(1)';
+            e.currentTarget.style.background = '#EF4444';
           }}>
             Upgrade to Premium
           </button>
 
           <p style={{
             fontSize: 14,
-            opacity: 0.8,
-            marginTop: 24
+            color: '#737373',
+            margin: 0
           }}>
-            30-day money-back guarantee • Cancel anytime
+            30-day money-back guarantee • Cancel anytime • No commitments
           </p>
         </div>
       </section>
@@ -558,10 +471,6 @@ export default function Home() {
       <style>{`
         * {
           -webkit-tap-highlight-color: transparent;
-        }
-
-        button {
-          -webkit-appearance: none;
         }
       `}</style>
     </div>
