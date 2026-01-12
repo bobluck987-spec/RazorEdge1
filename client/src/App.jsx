@@ -19,7 +19,7 @@ export default function App() {
     <AuthProvider>
       <PickProvider>
         <HashRouter>
-          <div style={{ padding: 20 }}>
+          <div> {/* style={{ padding: 20 }}>*/}
             <Header />
             <Routes>
               <Route path="/" element={<Home />} />

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Home, Target, BarChart3, LogIn, LogOut, Crown } from 'lucide-react';
+import { Home, TrendingUp, BarChart3, LogIn, LogOut, Crown, Zap } from 'lucide-react';
 
 export default function Header() {
   const [scrolled, setScrolled] = useState(false);
@@ -18,7 +18,7 @@ export default function Header() {
 
   const navItems = [
     { path: '/', label: 'Home', icon: Home },
-    { path: '/picks', label: 'Picks', icon: Target },
+    { path: '/picks', label: 'Picks', icon: TrendingUp }, // Changed from Target
     { path: '/analytics', label: 'Analytics', icon: BarChart3 },
   ];
 
@@ -31,10 +31,9 @@ export default function Header() {
         position: 'sticky',
         top: 0,
         zIndex: 1000,
-        background: scrolled ? 'rgba(255, 255, 255, 0.98)' : 'white',
+        background: scrolled ? 'rgba(0, 0, 0, 0.95)' : '#000000',
         backdropFilter: 'blur(10px)',
-        borderBottom: '1px solid #E0E0E0',
-        boxShadow: scrolled ? '0 2px 8px rgba(0, 0, 0, 0.04)' : 'none',
+        borderBottom: '1px solid #262626',
         transition: 'all 0.3s ease'
       }}>
         <div style={{
@@ -56,18 +55,19 @@ export default function Header() {
             <div style={{
               width: 36,
               height: 36,
-              background: '#2563EB',
+              background: '#EF4444',
               borderRadius: 8,
               display: 'flex',
               alignItems: 'center',
-              justifyContent: 'center'
+              justifyContent: 'center',
+              boxShadow: '0 0 20px rgba(239, 68, 68, 0.3)'
             }}>
-              <Target style={{ width: 20, height: 20, color: 'white' }} />
+              <Zap style={{ width: 20, height: 20, color: '#000000' }} />
             </div>
             <span style={{
               fontSize: 20,
               fontWeight: 800,
-              color: '#1A1A1A',
+              color: '#FFFFFF',
               letterSpacing: '-0.01em'
             }}>
               RazorEdge
@@ -87,11 +87,17 @@ export default function Header() {
                 style={{
                   fontSize: 15,
                   fontWeight: 600,
-                  color: isActive(item.path) ? '#2563EB' : '#616161',
+                  color: isActive(item.path) ? '#EF4444' : '#A3A3A3',
                   textDecoration: 'none',
                   padding: '8px 0',
-                  borderBottom: isActive(item.path) ? '2px solid #2563EB' : '2px solid transparent',
+                  borderBottom: isActive(item.path) ? '2px solid #EF4444' : '2px solid transparent',
                   transition: 'all 0.2s ease'
+                }}
+                onMouseEnter={(e) => {
+                  if (!isActive(item.path)) e.currentTarget.style.color = '#FFFFFF';
+                }}
+                onMouseLeave={(e) => {
+                  if (!isActive(item.path)) e.currentTarget.style.color = '#A3A3A3';
                 }}
               >
                 {item.label}
@@ -101,15 +107,16 @@ export default function Header() {
             {user?.role === 'free' && (
               <Link to="/upgrade" style={{
                 padding: '10px 20px',
-                background: '#FFA726',
-                color: 'white',
+                background: '#EF4444',
+                color: '#FFFFFF',
                 textDecoration: 'none',
                 fontSize: 14,
                 fontWeight: 700,
                 borderRadius: 8,
                 display: 'flex',
                 alignItems: 'center',
-                gap: 6
+                gap: 6,
+                boxShadow: '0 0 20px rgba(239, 68, 68, 0.3)'
               }}>
                 <Crown style={{ width: 16, height: 16 }} />
                 Upgrade
@@ -148,7 +155,7 @@ export default function Header() {
               <>
                 <Link to="/login" style={{
                   padding: '10px 20px',
-                  color: '#2563EB',
+                  color: '#FFFFFF',
                   textDecoration: 'none',
                   fontSize: 15,
                   fontWeight: 600
@@ -157,12 +164,13 @@ export default function Header() {
                 </Link>
                 <Link to="/register" style={{
                   padding: '10px 24px',
-                  background: '#2563EB',
-                  color: 'white',
+                  background: '#EF4444',
+                  color: '#FFFFFF',
                   textDecoration: 'none',
                   fontSize: 15,
                   fontWeight: 700,
-                  borderRadius: 8
+                  borderRadius: 8,
+                  boxShadow: '0 0 20px rgba(239, 68, 68, 0.3)'
                 }}>
                   Sign Up
                 </Link>
@@ -173,22 +181,22 @@ export default function Header() {
                 alignItems: 'center',
                 gap: 12,
                 padding: '8px 12px',
-                background: '#FAFAFA',
+                background: '#0A0A0A',
                 borderRadius: 8,
-                border: '1px solid #E0E0E0'
+                border: '1px solid #262626'
               }}>
                 <div>
                   <div style={{
                     fontSize: 14,
                     fontWeight: 600,
-                    color: '#1A1A1A'
+                    color: '#FFFFFF'
                   }}>
                     {user.email}
                   </div>
                   <div style={{
                     fontSize: 12,
                     fontWeight: 600,
-                    color: user.role === 'premium' ? '#FFA726' : user.role === 'admin' ? '#EF4444' : '#757575'
+                    color: user.role === 'premium' ? '#EF4444' : user.role === 'admin' ? '#EF4444' : '#737373'
                   }}>
                     {user.role.toUpperCase()}
                   </div>
@@ -199,7 +207,7 @@ export default function Header() {
                     padding: 8,
                     background: 'transparent',
                     border: 'none',
-                    color: '#616161',
+                    color: '#A3A3A3',
                     cursor: 'pointer'
                   }}
                 >
@@ -218,10 +226,9 @@ export default function Header() {
         left: 0,
         right: 0,
         zIndex: 1000,
-        background: 'white',
-        borderTop: '1px solid #E0E0E0',
-        padding: '12px 0 max(12px, env(safe-area-inset-bottom))',
-        boxShadow: '0 -2px 8px rgba(0, 0, 0, 0.04)'
+        background: '#000000',
+        borderTop: '1px solid #262626',
+        padding: '12px 0 max(12px, env(safe-area-inset-bottom))'
       }}>
         <div style={{
           display: 'flex',
@@ -243,7 +250,7 @@ export default function Header() {
                   gap: 4,
                   padding: '8px 20px',
                   textDecoration: 'none',
-                  color: active ? '#2563EB' : '#9E9E9E',
+                  color: active ? '#EF4444' : '#737373',
                   WebkitTapHighlightColor: 'transparent'
                 }}
               >
@@ -270,7 +277,7 @@ export default function Header() {
               gap: 4,
               padding: '8px 20px',
               textDecoration: 'none',
-              color: '#2563EB',
+              color: '#EF4444',
               WebkitTapHighlightColor: 'transparent'
             }}>
               <LogIn style={{ width: 24, height: 24 }} />
@@ -283,7 +290,7 @@ export default function Header() {
               alignItems: 'center',
               gap: 4,
               padding: '8px 20px',
-              color: '#9E9E9E',
+              color: '#737373',
               cursor: 'pointer',
               WebkitTapHighlightColor: 'transparent'
             }}>
