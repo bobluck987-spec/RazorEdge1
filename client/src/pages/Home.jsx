@@ -291,6 +291,10 @@ export default function Home() {
             How We Find Value
           </h2>
 
+           <div style={{
+              background: '#FFFFFF',
+              borderRadius: '15px'
+            }}>
           <p style={{
             fontSize: 18,
             color: '#6B6C68',
@@ -299,8 +303,11 @@ export default function Home() {
             margin: '0 auto 64px',
             lineHeight: 1.6
           }}>
+           
             We specialize in identifying market inefficiencies and exploiting undervalued opportunities
+            
           </p>
+          </div>
 
           <div style={{
             display: 'grid',
