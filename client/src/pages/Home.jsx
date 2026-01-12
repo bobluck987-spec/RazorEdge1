@@ -12,14 +12,14 @@ export default function Home() {
   return (
     <div style={{
       minHeight: '100vh',
-      background: '#141824',
+      background: '#e8eae3',
       paddingBottom: 100,
       fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
     }}>
       
       {/* DARK: Hero Section */}
       <section style={{
-        background: '#141824',
+        background: '#e8eae3',
         padding: '80px 0 100px',
         position: 'relative'
       }}>
@@ -172,7 +172,7 @@ export default function Home() {
             <h2 style={{
               fontSize: 32,
               fontWeight: 800,
-              color: '#141824',
+              color: '#e8eae3',
               margin: 0
             }}>
               Recent Big Hits
@@ -214,7 +214,7 @@ export default function Home() {
                 <div style={{
                   fontSize: 18,
                   fontWeight: 700,
-                  color: '#141824',
+                  color: '#e8eae3',
                   marginBottom: 8,
                   marginTop: 12
                 }}>
@@ -249,7 +249,7 @@ export default function Home() {
             fontSize: 36,
             fontWeight: 800,
             textAlign: 'center',
-            color: '#141824',
+            color: '#e8eae3',
             marginBottom: 16
           }}>
             Proven Track Record
@@ -297,7 +297,7 @@ export default function Home() {
                 <div style={{
                   fontSize: 16,
                   fontWeight: 700,
-                  color: '#141824',
+                  color: '#e8eae3',
                   marginBottom: 4
                 }}>
                   {stat.label}
@@ -316,7 +316,7 @@ export default function Home() {
 
       {/* DARK: Value Proposition */}
       <section style={{
-        background: '#141824',
+        background: '#e8eae3',
         padding: '80px 0'
       }}>
         <div style={{
@@ -405,7 +405,7 @@ export default function Home() {
 
       {/* DARK: Final CTA */}
       <section style={{
-        background: '#141824',
+        background: '#e8eae3',
         padding: '80px 0',
         borderTop: '1px solid #262626'
       }}>
