@@ -3,25 +3,23 @@ import { TrendingUp, Target, BarChart2, CheckCircle, ArrowRight, Trophy } from '
 
 export default function Home() {
   const recentWins = [
-    { team: 'Eagles +3.5', result: 'WON', profit: '+$220', date: 'Jan 10' },
-    { team: 'Lakers ML +145', result: 'WON', profit: '+$290', date: 'Jan 9' },
-    { team: 'Chiefs -7', result: 'WON', profit: '+$200', date: 'Jan 8' },
-    { team: '49ers o45.5', result: 'WON', profit: '+$180', date: 'Jan 7' },
+    { team: 'Eagles +3.5', profit: '+$220', date: 'Jan 10' },
+    { team: 'Lakers ML', profit: '+$290', date: 'Jan 9' },
+    { team: 'Chiefs -7', profit: '+$200', date: 'Jan 8' },
   ];
 
   return (
     <div style={{
       minHeight: '100vh',
-      background: '#e8eae3',
+      background: '#E8EAE3',
       paddingBottom: 100,
       fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
     }}>
       
-      {/* DARK: Hero Section */}
+      {/* Hero Section */}
       <section style={{
-        background: '#e8eae3',
-        padding: '80px 0 100px',
-        position: 'relative'
+        background: '#E8EAE3',
+        padding: '80px 0 60px'
       }}>
         <div style={{
           maxWidth: 1200,
@@ -56,7 +54,7 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Headline with Color Contrast */}
+          {/* Headline */}
           <h1 style={{
             fontSize: 'clamp(36px, 8vw, 64px)',
             fontWeight: 900,
@@ -65,7 +63,7 @@ export default function Home() {
             marginBottom: 24,
             letterSpacing: '-0.02em'
           }}>
-            <span style={{ color: '#FFFFFF' }}>
+            <span style={{ color: '#373833' }}>
               Beat the Sportsbooks.
             </span>
             <br />
@@ -76,17 +74,17 @@ export default function Home() {
 
           <p style={{
             fontSize: 20,
-            color: '#A3A3A3',
+            color: '#6B6C68',
             textAlign: 'center',
             maxWidth: 700,
             margin: '0 auto 48px',
             lineHeight: 1.6
           }}>
             Expert analysis. Market inefficiencies. Undervalued underdogs. 
-            <strong style={{ color: '#FFFFFF' }}> No algorithms—just sharp picks that win.</strong>
+            <strong style={{ color: '#373833' }}> No algorithms—just sharp picks that win.</strong>
           </p>
 
-          {/* Primary CTAs */}
+          {/* CTAs */}
           <div style={{
             display: 'flex',
             flexDirection: 'column',
@@ -108,7 +106,7 @@ export default function Home() {
               alignItems: 'center',
               justifyContent: 'center',
               gap: 12,
-              boxShadow: '0 4px 20px rgba(239, 68, 68, 0.4)',
+              boxShadow: '0 4px 20px rgba(239, 68, 68, 0.3)',
               transition: 'all 0.2s ease'
             }}
             onTouchStart={(e) => {
@@ -127,8 +125,8 @@ export default function Home() {
               width: '100%',
               padding: '20px 32px',
               background: 'transparent',
-              color: '#FFFFFF',
-              border: '2px solid #404040',
+              color: '#373833',
+              border: '2px solid #C8CAC3',
               borderRadius: 12,
               fontSize: 18,
               fontWeight: 700,
@@ -136,11 +134,11 @@ export default function Home() {
               transition: 'all 0.2s ease'
             }}
             onTouchStart={(e) => {
-              e.currentTarget.style.borderColor = '#525252';
-              e.currentTarget.style.background = '#0A0A0A';
+              e.currentTarget.style.borderColor = '#373833';
+              e.currentTarget.style.background = '#FFFFFF';
             }}
             onTouchEnd={(e) => {
-              e.currentTarget.style.borderColor = '#404040';
+              e.currentTarget.style.borderColor = '#C8CAC3';
               e.currentTarget.style.background = 'transparent';
             }}>
               View Free Picks
@@ -149,10 +147,12 @@ export default function Home() {
         </div>
       </section>
 
-      {/* LIGHT: Recent Big Hits + Stats */}
+      {/* Condensed Data Section */}
       <section style={{
         background: '#FFFFFF',
-        padding: '80px 0'
+        padding: '50px 0',
+        borderTop: '1px solid #D8DAD3',
+        borderBottom: '1px solid #D8DAD3'
       }}>
         <div style={{
           maxWidth: 1200,
@@ -160,153 +160,110 @@ export default function Home() {
           padding: '0 24px'
         }}>
           
-          {/* Recent Wins */}
+          {/* Recent Wins - Horizontal on mobile */}
           <div style={{
             display: 'flex',
             alignItems: 'center',
-            justifyContent: 'center',
             gap: 12,
-            marginBottom: 40
+            marginBottom: 32,
+            justifyContent: 'center'
           }}>
-            <Trophy style={{ width: 28, height: 28, color: '#EF4444' }} />
+            <Trophy style={{ width: 24, height: 24, color: '#EF4444' }} />
             <h2 style={{
-              fontSize: 32,
+              fontSize: 24,
               fontWeight: 800,
-              color: '#e8eae3',
+              color: '#373833',
               margin: 0
             }}>
-              Recent Big Hits
+              Recent Wins
             </h2>
           </div>
 
           <div style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
-            gap: 16,
-            marginBottom: 80
+            gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+            gap: 12,
+            marginBottom: 40
           }}>
             {recentWins.map((win, idx) => (
               <div
                 key={idx}
                 style={{
-                  background: '#FAFAFA',
-                  border: '1px solid #E5E5E5',
-                  borderRadius: 12,
-                  padding: 20,
-                  position: 'relative',
-                  overflow: 'hidden'
-                }}
-              >
-                <div style={{
-                  position: 'absolute',
-                  top: 0,
-                  right: 0,
-                  padding: '6px 12px',
-                  background: '#10B981',
-                  borderBottomLeftRadius: 8,
-                  fontSize: 12,
-                  fontWeight: 900,
-                  color: 'white'
-                }}>
-                  {win.result}
-                </div>
-
-                <div style={{
-                  fontSize: 18,
-                  fontWeight: 700,
-                  color: '#e8eae3',
-                  marginBottom: 8,
-                  marginTop: 12
-                }}>
-                  {win.team}
-                </div>
-
-                <div style={{
+                  background: '#F8F9F6',
+                  border: '1px solid #E8EAE3',
+                  borderRadius: 10,
+                  padding: 16,
                   display: 'flex',
                   justifyContent: 'space-between',
                   alignItems: 'center'
-                }}>
-                  <span style={{
-                    fontSize: 24,
-                    fontWeight: 900,
-                    color: '#10B981'
+                }}
+              >
+                <div>
+                  <div style={{
+                    fontSize: 15,
+                    fontWeight: 700,
+                    color: '#373833',
+                    marginBottom: 4
                   }}>
-                    {win.profit}
-                  </span>
-                  <span style={{
-                    fontSize: 14,
-                    color: '#737373'
+                    {win.team}
+                  </div>
+                  <div style={{
+                    fontSize: 12,
+                    color: '#6B6C68'
                   }}>
                     {win.date}
-                  </span>
+                  </div>
+                </div>
+                <div style={{
+                  fontSize: 20,
+                  fontWeight: 900,
+                  color: '#10B981'
+                }}>
+                  {win.profit}
                 </div>
               </div>
             ))}
           </div>
 
-          {/* Track Record Stats */}
-          <h2 style={{
-            fontSize: 36,
-            fontWeight: 800,
-            textAlign: 'center',
-            color: '#e8eae3',
-            marginBottom: 16
-          }}>
-            Proven Track Record
-          </h2>
-
-          <p style={{
-            fontSize: 18,
-            color: '#737373',
-            textAlign: 'center',
-            marginBottom: 48
-          }}>
-            Real results. Full transparency. Every pick graded.
-          </p>
-
+          {/* Quick Stats - 2x2 Grid */}
           <div style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
-            gap: 24
+            gridTemplateColumns: 'repeat(2, 1fr)',
+            gap: 12,
+            maxWidth: 600,
+            margin: '0 auto'
           }}>
             {[
-              { label: 'All-Time Win Rate', value: '67.8%', sublabel: 'Against the spread' },
-              { label: 'Total Picks Graded', value: '1,247', sublabel: 'Complete history' },
-              { label: 'Average ROI', value: '+15.3%', sublabel: 'Verified returns' },
-              { label: 'Last 30 Days', value: '24-16', sublabel: '60% win rate' },
+              { label: 'Win Rate', value: '67.8%' },
+              { label: 'Total Picks', value: '1,247' },
+              { label: 'Avg ROI', value: '+15.3%' },
+              { label: 'Last 30d', value: '24-16' },
             ].map((stat, idx) => (
               <div
                 key={idx}
                 style={{
-                  background: '#FAFAFA',
-                  padding: 32,
-                  borderRadius: 12,
-                  border: '1px solid #E5E5E5',
+                  background: '#F8F9F6',
+                  padding: 20,
+                  borderRadius: 10,
+                  border: '1px solid #E8EAE3',
                   textAlign: 'center'
                 }}
               >
                 <div style={{
-                  fontSize: 48,
+                  fontSize: 32,
                   fontWeight: 900,
                   color: '#EF4444',
-                  marginBottom: 8,
+                  marginBottom: 4,
                   letterSpacing: '-0.02em'
                 }}>
                   {stat.value}
                 </div>
                 <div style={{
-                  fontSize: 16,
-                  fontWeight: 700,
-                  color: '#e8eae3',
-                  marginBottom: 4
+                  fontSize: 13,
+                  fontWeight: 600,
+                  color: '#6B6C68'
                 }}>
                   {stat.label}
-                </div>
-                <div style={{
-                  fontSize: 14,
-                  color: '#737373'
-                }}>
-                  {stat.sublabel}
                 </div>
               </div>
             ))}
@@ -314,9 +271,9 @@ export default function Home() {
         </div>
       </section>
 
-      {/* DARK: Value Proposition */}
+      {/* Value Proposition */}
       <section style={{
-        background: '#e8eae3',
+        background: '#E8EAE3',
         padding: '80px 0'
       }}>
         <div style={{
@@ -328,7 +285,7 @@ export default function Home() {
             fontSize: 36,
             fontWeight: 800,
             textAlign: 'center',
-            color: '#FFFFFF',
+            color: '#373833',
             marginBottom: 16
           }}>
             How We Find Value
@@ -336,7 +293,7 @@ export default function Home() {
 
           <p style={{
             fontSize: 18,
-            color: '#A3A3A3',
+            color: '#6B6C68',
             textAlign: 'center',
             maxWidth: 700,
             margin: '0 auto 64px',
@@ -371,8 +328,8 @@ export default function Home() {
                 <div style={{
                   width: 64,
                   height: 64,
-                  background: '#0A0A0A',
-                  border: '1px solid #262626',
+                  background: '#FFFFFF',
+                  border: '1px solid #D8DAD3',
                   borderRadius: 12,
                   display: 'flex',
                   alignItems: 'center',
@@ -384,14 +341,14 @@ export default function Home() {
                 <h3 style={{
                   fontSize: 20,
                   fontWeight: 700,
-                  color: '#FFFFFF',
+                  color: '#373833',
                   marginBottom: 12
                 }}>
                   {item.title}
                 </h3>
                 <p style={{
                   fontSize: 15,
-                  color: '#A3A3A3',
+                  color: '#6B6C68',
                   lineHeight: 1.6,
                   margin: 0
                 }}>
@@ -403,11 +360,10 @@ export default function Home() {
         </div>
       </section>
 
-      {/* DARK: Final CTA */}
+      {/* Final CTA */}
       <section style={{
-        background: '#e8eae3',
-        padding: '80px 0',
-        borderTop: '1px solid #262626'
+        background: '#373833',
+        padding: '80px 0'
       }}>
         <div style={{
           maxWidth: 700,
@@ -427,7 +383,7 @@ export default function Home() {
           
           <p style={{
             fontSize: 18,
-            color: '#A3A3A3',
+            color: '#C8CAC3',
             marginBottom: 40,
             lineHeight: 1.6
           }}>
@@ -460,7 +416,7 @@ export default function Home() {
 
           <p style={{
             fontSize: 14,
-            color: '#737373',
+            color: '#9B9C97',
             margin: 0
           }}>
             30-day money-back guarantee • Cancel anytime • No commitments
