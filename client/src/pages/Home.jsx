@@ -188,7 +188,7 @@ export default function Home() {
                 key={idx}
                 style={{
                   background: '#ffffff',
-                  border: '1px solid #e0e0e0',
+                  border: '1px solid #010000',
                   borderRadius: 10,
                   padding: 16,
                   display: 'flex',
@@ -243,7 +243,7 @@ export default function Home() {
                   background: '#ffffff',
                   padding: 20,
                   borderRadius: 10,
-                  border: '1px solid #d0d0d0',
+                  border: '1px solid #010000',
                   textAlign: 'center'
                 }}
               >
