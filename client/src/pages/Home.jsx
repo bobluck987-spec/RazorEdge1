@@ -147,17 +147,18 @@ export default function Home() {
 
       {/* Condensed Data Section */}
       <section style={{
-        background: '#f5f5f5',
-        padding: '50px 0',
-        borderTop: '1px solid #e0e0e0',
-        borderBottom: '1px solid #e0e0e0'
+        background: '#ffffff',
+        padding: '80px 0'
       }}>
         <div style={{
-          maxWidth: 1200,
+          maxWidth: 1100,
           margin: '0 auto',
-          padding: '0 24px'
+          padding: '50px 24px',
+          background: '#f5f5f5',
+          borderRadius: 20,
+          boxShadow: '0 8px 24px rgba(0, 0, 0, 0.15), 0 4px 8px rgba(0, 0, 0, 0.1)'
         }}>
-          
+        
           {/* Recent Wins - Horizontal on mobile */}
           <div style={{
             display: 'flex',
