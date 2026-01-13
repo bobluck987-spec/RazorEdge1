@@ -1,7 +1,32 @@
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { TrendingUp, Target, BarChart2, CheckCircle, ArrowRight, Trophy } from 'lucide-react';
 
 export default function Home() {
+  const [visibleCards, setVisibleCards] = useState([]);
+  const cardRefs = useRef([]);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const index = cardRefs.current.indexOf(entry.target);
+            if (index !== -1 && !visibleCards.includes(index)) {
+              setVisibleCards(prev => [...prev, index]);
+            }
+          }
+        });
+      },
+      { threshold: 0.2 }
+    );
+
+    cardRefs.current.forEach((ref) => {
+      if (ref) observer.observe(ref);
+    });
+
+    return () => observer.disconnect();
+  }, [visibleCards]);
+
   const recentWins = [
     { title: 'NFL Wild Card', team: 'Eagles +3.5', odds: '-110', profit: '+$220', date: 'Jan 10' },
     { title: 'NBA', team: 'Lakers ML', odds: '+145', profit: '+$290', date: 'Jan 9' },
@@ -369,39 +394,51 @@ export default function Home() {
                 title: 'Underdog Focus',
                 description: 'Many of our best picks are overlooked underdogs. The market often misprices teams with real winning potential.'
               }
-            ].map((item, idx) => (
-              <div key={idx} style={{
-                background: '#f5f5f5',
-                border: '1px solid #e0e0e0',
-                borderRadius: 16,
-                padding: '32px 24px',
-                textAlign: 'center'
-              }}>
-                <div style={{
-                  display: 'flex',
-                  justifyContent: 'center',
-                  marginBottom: 20
-                }}>
-                  {item.icon}
+            ].map((item, idx) => {
+              const isVisible = visibleCards.includes(idx);
+              return (
+                <div 
+                  key={idx} 
+                  ref={el => cardRefs.current[idx] = el}
+                  style={{
+                    background: '#f5f5f5',
+                    border: '1px solid #e0e0e0',
+                    borderRadius: 16,
+                    padding: '32px 24px',
+                    textAlign: 'center',
+                    opacity: isVisible ? 1 : 0,
+                    transform: isVisible ? 'translateY(0)' : 'translateY(40px)',
+                    boxShadow: isVisible ? '0.3px 0.5px 0.5px hsl(0 0% 70% / 0.38), 0.4px 0.8px 0.7px -0.5px hsl(0 0% 70% / 0.35), 0.7px 1.4px 1.3px -1px hsl(0 0% 70% / 0.32), 1.3px 2.6px 2.4px -1.5px hsl(0 0% 70% / 0.28), 2.3px 4.7px 4.3px -2px hsl(0 0% 70% / 0.25), 4px 8px 7.4px -2.5px hsl(0 0% 70% / 0.21), 6.4px 12.9px 11.9px -3px hsl(0 0% 70% / 0.18), 9.8px 19.6px 18.1px -3.5px hsl(0 0% 70% / 0.14), 14.3px 28.5px 26.3px -4px hsl(0 0% 70% / 0.11), 20px 40px 36.9px -4.5px hsl(0 0% 70% / 0.08)' : 'none',
+                    transition: 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)',
+                    transitionDelay: `${idx * 0.1}s`
+                  }}
+                >
+                  <div style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    marginBottom: 20
+                  }}>
+                    {item.icon}
+                  </div>
+                  <h3 style={{
+                    fontSize: 20,
+                    fontWeight: 700,
+                    color: '#010000',
+                    marginBottom: 12
+                  }}>
+                    {item.title}
+                  </h3>
+                  <p style={{
+                    fontSize: 15,
+                    color: '#4a4a4a',
+                    lineHeight: 1.6,
+                    margin: 0
+                  }}>
+                    {item.description}
+                  </p>
                 </div>
-                <h3 style={{
-                  fontSize: 20,
-                  fontWeight: 700,
-                  color: '#010000',
-                  marginBottom: 12
-                }}>
-                  {item.title}
-                </h3>
-                <p style={{
-                  fontSize: 15,
-                  color: '#4a4a4a',
-                  lineHeight: 1.6,
-                  margin: 0
-                }}>
-                  {item.description}
-                </p>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>
