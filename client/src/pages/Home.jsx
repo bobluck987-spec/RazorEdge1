@@ -3,9 +3,9 @@ import { TrendingUp, Target, BarChart2, CheckCircle, ArrowRight, Trophy } from '
 
 export default function Home() {
   const recentWins = [
-    { team: 'Eagles +3.5', profit: '+$220', date: 'Jan 10' },
-    { team: 'Lakers ML', profit: '+$290', date: 'Jan 9' },
-    { team: 'Chiefs -7', profit: '+$200', date: 'Jan 8' },
+    { title: 'NFL Wild Card', team: 'Eagles +3.5', odds: '-110', profit: '+$220', date: 'Jan 10' },
+    { title: 'NBA', team: 'Lakers ML', odds: '+145', profit: '+$290', date: 'Jan 9' },
+    { title: 'NFL Playoffs', team: 'Chiefs -7', odds: '-105', profit: '+$200', date: 'Jan 8' },
   ];
 
   return (
@@ -156,32 +156,44 @@ export default function Home() {
           padding: '50px 24px',
           background: '#f5f5f5',
           borderRadius: 20,
-          boxShadow: '0 8px 24px rgba(0, 0, 0, 0.15), 0 4px 8px rgba(0, 0, 0, 0.1)'
+          boxShadow: '0.3px 0.5px 0.5px hsl(0 0% 70% / 0.38), 0.4px 0.8px 0.7px -0.5px hsl(0 0% 70% / 0.35), 0.7px 1.4px 1.3px -1px hsl(0 0% 70% / 0.32), 1.3px 2.6px 2.4px -1.5px hsl(0 0% 70% / 0.28), 2.3px 4.7px 4.3px -2px hsl(0 0% 70% / 0.25), 4px 8px 7.4px -2.5px hsl(0 0% 70% / 0.21), 6.4px 12.9px 11.9px -3px hsl(0 0% 70% / 0.18), 9.8px 19.6px 18.1px -3.5px hsl(0 0% 70% / 0.14), 14.3px 28.5px 26.3px -4px hsl(0 0% 70% / 0.11), 20px 40px 36.9px -4.5px hsl(0 0% 70% / 0.08)'
         }}>
         
           {/* Recent Wins - Horizontal on mobile */}
           <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 12,
-            marginBottom: 32,
-            justifyContent: 'center'
+            textAlign: 'center',
+            marginBottom: 40
           }}>
-            <Trophy style={{ width: 24, height: 24, color: '#e73725' }} />
-            <h2 style={{
-              fontSize: 24,
-              fontWeight: 800,
-              color: '#010000',
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 12,
+              marginBottom: 16,
+              justifyContent: 'center'
+            }}>
+              <Trophy style={{ width: 24, height: 24, color: '#e73725' }} />
+              <h2 style={{
+                fontSize: 28,
+                fontWeight: 800,
+                color: '#010000',
+                margin: 0
+              }}>
+                Recent Big Hits
+              </h2>
+            </div>
+            <p style={{
+              fontSize: 16,
+              color: '#4a4a4a',
               margin: 0
             }}>
-              Recent Wins
-            </h2>
+              We don't just talk. We cash tickets.
+            </p>
           </div>
 
           <div style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-            gap: 12,
+            gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+            gap: 16,
             marginBottom: 40
           }}>
             {recentWins.map((win, idx) => (
@@ -189,36 +201,70 @@ export default function Home() {
                 key={idx}
                 style={{
                   background: '#ffffff',
-                  border: '1px solid #010000',
+                  border: 'none',
                   borderRadius: 10,
-                  padding: 16,
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center'
+                  padding: 20,
+                  boxShadow: '0.3px 0.5px 0.5px hsl(0 0% 70% / 0.41), 0.4px 0.8px 0.7px -1.1px hsl(0 0% 70% / 0.34), 0.9px 1.7px 1.6px -2.2px hsl(0 0% 70% / 0.27), 2.1px 4.2px 3.9px -3.4px hsl(0 0% 70% / 0.19), 4.5px 9px 8.3px -4.5px hsl(0 0% 70% / 0.12)',
+                  transition: 'box-shadow 0.2s ease'
                 }}
               >
-                <div>
-                  <div style={{
-                    fontSize: 15,
-                    fontWeight: 700,
-                    color: '#010000',
-                    marginBottom: 4
-                  }}>
-                    {win.team}
-                  </div>
-                  <div style={{
-                    fontSize: 12,
-                    color: '#666666'
-                  }}>
-                    {win.date}
-                  </div>
-                </div>
                 <div style={{
-                  fontSize: 20,
-                  fontWeight: 900,
-                  color: '#5dc110'
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'flex-start',
+                  gap: 16
                 }}>
-                  {win.profit}
+                  <div style={{ flex: 1 }}>
+                    <h3 style={{
+                      fontSize: 17,
+                      fontWeight: 700,
+                      color: '#010000',
+                      marginBottom: 8,
+                      margin: 0
+                    }}>
+                      {win.title}
+                    </h3>
+                    <p style={{
+                      fontSize: 15,
+                      color: '#4a4a4a',
+                      marginBottom: 4,
+                      margin: '4px 0'
+                    }}>
+                      Pick: <span style={{ fontWeight: 700, color: '#010000' }}>{win.team}</span>
+                    </p>
+                    <p style={{
+                      fontSize: 13,
+                      color: '#666666',
+                      margin: 0
+                    }}>
+                      Odds: {win.odds}
+                    </p>
+                  </div>
+                  <div style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'flex-end',
+                    gap: 8
+                  }}>
+                    <span style={{
+                      background: '#5dc110',
+                      color: '#ffffff',
+                      fontSize: 11,
+                      fontWeight: 700,
+                      padding: '4px 10px',
+                      borderRadius: 20,
+                      whiteSpace: 'nowrap'
+                    }}>
+                      WON
+                    </span>
+                    <div style={{
+                      fontSize: 22,
+                      fontWeight: 900,
+                      color: '#5dc110'
+                    }}>
+                      {win.profit}
+                    </div>
+                  </div>
                 </div>
               </div>
             ))}
@@ -244,7 +290,8 @@ export default function Home() {
                   background: '#ffffff',
                   padding: 20,
                   borderRadius: 10,
-                  border: '1px solid #010000',
+                  border: 'none',
+                  boxShadow: '0.3px 0.5px 0.5px hsl(0 0% 70% / 0.41), 0.4px 0.8px 0.7px -1.1px hsl(0 0% 70% / 0.34), 0.9px 1.7px 1.6px -2.2px hsl(0 0% 70% / 0.27), 2.1px 4.2px 3.9px -3.4px hsl(0 0% 70% / 0.19), 4.5px 9px 8.3px -4.5px hsl(0 0% 70% / 0.12)',
                   textAlign: 'center'
                 }}
               >
