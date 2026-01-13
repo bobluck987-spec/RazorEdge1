@@ -147,10 +147,10 @@ export default function Home() {
 
       {/* Condensed Data Section */}
       <section style={{
-        background: '#e1e1e1',
+        background: '#f5f5f5',
         padding: '50px 0',
-        borderTop: '1px solid #d0d0d0',
-        borderBottom: '1px solid #d0d0d0'
+        borderTop: '1px solid #e0e0e0',
+        borderBottom: '1px solid #e0e0e0'
       }}>
         <div style={{
           maxWidth: 1200,
@@ -188,7 +188,7 @@ export default function Home() {
                 key={idx}
                 style={{
                   background: '#ffffff',
-                  border: '1px solid #d0d0d0',
+                  border: '1px solid #e0e0e0',
                   borderRadius: 10,
                   padding: 16,
                   display: 'flex',
