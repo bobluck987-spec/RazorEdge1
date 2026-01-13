@@ -196,9 +196,9 @@ export default function Home() {
               marginBottom: 16,
               justifyContent: 'center'
             }}>
-              <Trophy style={{ width: 24, height: 24, color: '#e73725' }} />
+              <Trophy style={{ width: 26, height: 26, color: '#e73725' }} />
               <h2 style={{
-                fontSize: 28,
+                fontSize: 32,
                 fontWeight: 800,
                 color: '#010000',
                 margin: 0
@@ -207,7 +207,7 @@ export default function Home() {
               </h2>
             </div>
             <p style={{
-              fontSize: 16,
+              fontSize: 18,
               color: '#4a4a4a',
               margin: 0
             }}>
@@ -407,7 +407,7 @@ export default function Home() {
                     padding: '32px 24px',
                     textAlign: 'center',
                     opacity: isVisible ? 1 : 0,
-                    transform: isVisible ? 'translateY(0)' : 'translateY(40px)',
+                    transform: isVisible ? 'translate(0, 0)' : 'translate(8px, 8px)',
                     boxShadow: isVisible ? '0.3px 0.5px 0.5px hsl(0 0% 70% / 0.38), 0.4px 0.8px 0.7px -0.5px hsl(0 0% 70% / 0.35), 0.7px 1.4px 1.3px -1px hsl(0 0% 70% / 0.32), 1.3px 2.6px 2.4px -1.5px hsl(0 0% 70% / 0.28), 2.3px 4.7px 4.3px -2px hsl(0 0% 70% / 0.25), 4px 8px 7.4px -2.5px hsl(0 0% 70% / 0.21), 6.4px 12.9px 11.9px -3px hsl(0 0% 70% / 0.18), 9.8px 19.6px 18.1px -3.5px hsl(0 0% 70% / 0.14), 14.3px 28.5px 26.3px -4px hsl(0 0% 70% / 0.11), 20px 40px 36.9px -4.5px hsl(0 0% 70% / 0.08)' : 'none',
                     transition: 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)',
                     transitionDelay: `${idx * 0.1}s`
