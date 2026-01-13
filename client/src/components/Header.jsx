@@ -239,7 +239,7 @@ export default function Header() {
         bottom: 0,
         left: 0,
         right: 0,
-        zIndex: 1000,
+        zIndex: 900,
         background: '#010000',
         borderTop: '1px solid #262626',
         padding: '12px 0 max(12px, env(safe-area-inset-bottom))'
