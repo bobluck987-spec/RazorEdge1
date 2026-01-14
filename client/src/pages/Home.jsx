@@ -630,14 +630,14 @@ export default function Home() {
       {/* Sticky CTA Bar */}
       <div style={{
         position: 'fixed',
-        bottom: 0,
+        bottom: 'calc(60px + env(safe-area-inset-bottom))',
         left: 0,
         right: 0,
         background: '#ffffff',
         borderTop: '2px solid #e73725',
         padding: '12px 16px',
         boxShadow: '0 -4px 12px rgba(0, 0, 0, 0.1)',
-        transform: showStickyCTA ? 'translateY(0)' : 'translateY(100%)',
+        transform: showStickyCTA ? 'translateY(0)' : 'translateY(200%)',
         transition: 'transform 0.3s ease',
         zIndex: 950,
         display: 'flex',
