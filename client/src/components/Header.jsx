@@ -245,7 +245,7 @@ export default function Header() {
         padding: '12px 0 max(12px, env(safe-area-inset-bottom))'
       }}>
         <div style={{
-          position: 'relative',
+          //position: 'relative',
           display: 'flex',
           justifyContent: 'space-around',
           maxWidth: 600,
