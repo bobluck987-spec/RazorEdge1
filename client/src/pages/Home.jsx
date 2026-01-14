@@ -80,12 +80,52 @@ export default function Home() {
       {/* Hero Section */}
       <section ref={heroRef} style={{
         background: '#f8f8f8',
-        padding: '80px 0 60px'
+        padding: '80px 0 60px',
+        position: 'relative',
+        overflow: 'hidden'
       }}>
+        {/* Background Image - Football themed */}
+        <div style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundImage: 'url(/client/src/public/images/modern-american-football-stadium-red-seats-103596327.jpg)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          opacity: 0.4,
+          pointerEvents: 'none'
+        }} />
+        
+        {/* Red tint overlay */}
+        <div style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: 'radial-gradient(circle at center, transparent 0%, rgba(231, 55, 37, 0.1) 100%)',
+          pointerEvents: 'none'
+        }} />
+        
+        {/* White overlay for text readability */}
+        <div style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: 'rgba(248, 248, 248, 0.75)',
+          pointerEvents: 'none'
+        }} />
+
         <div style={{
           maxWidth: 1200,
           margin: '0 auto',
-          padding: '0 24px'
+          padding: '0 24px',
+          position: 'relative',
+          zIndex: 1
         }}>
           
           {/* Trust Badge */}
