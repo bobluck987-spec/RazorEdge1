@@ -637,7 +637,7 @@ export default function Home() {
         borderTop: '2px solid #e73725',
         padding: '12px 16px',
         boxShadow: '0 -4px 12px rgba(0, 0, 0, 0.1)',
-        transform: showStickyCTA ? 'translateY(0)' : 'translateY(200%)',
+        transform: showStickyCTA ? 'translateY(0)' : 'translateY(calc(100% + 84px + env(safe-area-inset-bottom)))',
         transition: 'transform 0.3s ease',
         zIndex: 950,
         display: 'flex',
