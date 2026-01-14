@@ -639,7 +639,7 @@ export default function Home() {
         boxShadow: '0 -4px 12px rgba(0, 0, 0, 0.1)',
         transform: showStickyCTA ? 'translateY(0)' : 'translateY(100%)',
         transition: 'transform 0.3s ease',
-        zIndex: 1000,
+        zIndex: 950,
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
