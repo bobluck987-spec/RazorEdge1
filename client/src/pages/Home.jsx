@@ -91,7 +91,7 @@ export default function Home() {
           left: 0,
           right: 0,
           bottom: 0,
-          backgroundImage: 'url(/client/src/public/images/modern-american-football-stadium-red-seats-103596327.jpg)',
+          backgroundImage: 'url(https://source.unsplash.com/1600x900/?football,stadium,red)',
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           opacity: 0.4,
