@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Home, TrendingUp, BarChart3, LogIn, LogOut, Crown, Zap } from 'lucide-react';
+import { Home, TrendingUp, BarChart3, LogIn, LogOut, Crown, Zap, Menu, X } from 'lucide-react';
 
 export default function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [indicatorStyle, setIndicatorStyle] = useState({ left: 0, width: 0 });
+  const [menuOpen, setMenuOpen] = useState(false);
   const { user, logout } = useAuth();
   const location = useLocation();
   const tabRefs = useRef([]);
@@ -17,6 +18,18 @@ export default function Header() {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  useEffect(() => {
+    // Prevent scrolling when menu is open
+    if (menuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [menuOpen]);
 
   const navItems = [
     { path: '/', label: 'Home', icon: Home },
@@ -87,6 +100,22 @@ export default function Header() {
               RazorEdge
             </span>
           </Link>
+
+          {/* Mobile Menu Button */}
+          <button
+            className="mobile-menu-btn"
+            onClick={() => setMenuOpen(!menuOpen)}
+            style={{
+              display: 'none',
+              padding: 8,
+              background: 'transparent',
+              border: 'none',
+              color: '#ffffff',
+              cursor: 'pointer'
+            }}
+          >
+            {menuOpen ? <X style={{ width: 24, height: 24 }} /> : <Menu style={{ width: 24, height: 24 }} />}
+          </button>
 
           {/* Desktop Nav */}
           <nav className="desktop-nav" style={{
@@ -233,6 +262,241 @@ export default function Header() {
         </div>
       </header>
 
+      {/* Mobile Menu Overlay */}
+      <div style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        background: 'rgba(1, 0, 0, 0.95)',
+        backdropFilter: 'blur(10px)',
+        zIndex: 999,
+        opacity: menuOpen ? 1 : 0,
+        pointerEvents: menuOpen ? 'auto' : 'none',
+        transition: 'opacity 0.3s ease',
+        overflowY: 'auto',
+        paddingTop: 80
+      }}>
+        <div style={{
+          maxWidth: 600,
+          margin: '0 auto',
+          padding: '40px 24px',
+          transform: menuOpen ? 'translateY(0)' : 'translateY(-20px)',
+          transition: 'transform 0.3s ease',
+          transitionDelay: menuOpen ? '0.1s' : '0s'
+        }}>
+          {/* Nav Links */}
+          <nav style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 8,
+            marginBottom: 32
+          }}>
+            {navItems.map((item) => {
+              const Icon = item.icon;
+              const active = isActive(item.path);
+              return (
+                <Link
+                  key={item.path}
+                  to={item.path}
+                  onClick={() => setMenuOpen(false)}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 16,
+                    padding: '16px 20px',
+                    background: active ? 'rgba(231, 55, 37, 0.1)' : 'transparent',
+                    borderRadius: 12,
+                    textDecoration: 'none',
+                    color: active ? '#e73725' : '#ffffff',
+                    fontSize: 18,
+                    fontWeight: 600,
+                    border: active ? '1px solid rgba(231, 55, 37, 0.3)' : '1px solid transparent',
+                    transition: 'all 0.2s ease'
+                  }}
+                >
+                  <Icon style={{ width: 24, height: 24 }} />
+                  {item.label}
+                </Link>
+              );
+            })}
+
+            {user?.role === 'admin' && (
+              <>
+                <Link
+                  to="/admin"
+                  onClick={() => setMenuOpen(false)}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 16,
+                    padding: '16px 20px',
+                    background: 'transparent',
+                    borderRadius: 12,
+                    textDecoration: 'none',
+                    color: '#e73725',
+                    fontSize: 18,
+                    fontWeight: 600,
+                    border: '1px solid transparent'
+                  }}
+                >
+                  Admin
+                </Link>
+                <Link
+                  to="/admin/dashboard"
+                  onClick={() => setMenuOpen(false)}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 16,
+                    padding: '16px 20px',
+                    background: 'transparent',
+                    borderRadius: 12,
+                    textDecoration: 'none',
+                    color: '#e73725',
+                    fontSize: 18,
+                    fontWeight: 600,
+                    border: '1px solid transparent'
+                  }}
+                >
+                  Dashboard
+                </Link>
+              </>
+            )}
+          </nav>
+
+          {/* User Section */}
+          <div style={{
+            borderTop: '1px solid #262626',
+            paddingTop: 24
+          }}>
+            {!user ? (
+              <div style={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 12
+              }}>
+                <Link
+                  to="/login"
+                  onClick={() => setMenuOpen(false)}
+                  style={{
+                    padding: '16px 24px',
+                    background: 'transparent',
+                    color: '#ffffff',
+                    textDecoration: 'none',
+                    fontSize: 16,
+                    fontWeight: 600,
+                    textAlign: 'center',
+                    border: '1px solid #262626',
+                    borderRadius: 12
+                  }}
+                >
+                  Login
+                </Link>
+                <Link
+                  to="/register"
+                  onClick={() => setMenuOpen(false)}
+                  style={{
+                    padding: '16px 24px',
+                    background: '#e73725',
+                    color: '#ffffff',
+                    textDecoration: 'none',
+                    fontSize: 16,
+                    fontWeight: 700,
+                    textAlign: 'center',
+                    borderRadius: 12,
+                    boxShadow: '0 0 20px rgba(231, 55, 37, 0.3)'
+                  }}
+                >
+                  Sign Up
+                </Link>
+              </div>
+            ) : (
+              <>
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  padding: '16px 20px',
+                  background: '#0A0A0A',
+                  borderRadius: 12,
+                  border: '1px solid #262626',
+                  marginBottom: 16
+                }}>
+                  <div>
+                    <div style={{
+                      fontSize: 16,
+                      fontWeight: 600,
+                      color: '#FFFFFF'
+                    }}>
+                      {user.email}
+                    </div>
+                    <div style={{
+                      fontSize: 14,
+                      fontWeight: 600,
+                      color: user.role === 'premium' ? '#e73725' : user.role === 'admin' ? '#e73725' : '#737373'
+                    }}>
+                      {user.role.toUpperCase()}
+                    </div>
+                  </div>
+                </div>
+
+                {user.role === 'free' && (
+                  <Link
+                    to="/upgrade"
+                    onClick={() => setMenuOpen(false)}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: 8,
+                      padding: '16px 24px',
+                      background: '#e73725',
+                      color: '#ffffff',
+                      textDecoration: 'none',
+                      fontSize: 16,
+                      fontWeight: 700,
+                      borderRadius: 12,
+                      boxShadow: '0 0 20px rgba(231, 55, 37, 0.3)',
+                      marginBottom: 12
+                    }}
+                  >
+                    <Crown style={{ width: 20, height: 20 }} />
+                    Upgrade to Premium
+                  </Link>
+                )}
+
+                <button
+                  onClick={() => {
+                    logout();
+                    setMenuOpen(false);
+                  }}
+                  style={{
+                    width: '100%',
+                    padding: '16px 24px',
+                    background: 'transparent',
+                    color: '#A3A3A3',
+                    border: '1px solid #262626',
+                    borderRadius: 12,
+                    fontSize: 16,
+                    fontWeight: 600,
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: 8
+                  }}
+                >
+                  <LogOut style={{ width: 20, height: 20 }} />
+                  Logout
+                </button>
+              </>
+            )}
+          </div>
+        </div>
+      </div>
+
       {/* Mobile Bottom Nav */}
       <div className="mobile-tabs" style={{
         position: 'fixed',
@@ -335,9 +599,11 @@ export default function Header() {
       <style>{`
         @media (min-width: 768px) {
           .mobile-tabs { display: none; }
+          .mobile-menu-btn { display: none !important; }
         }
         @media (max-width: 767px) {
           .desktop-nav { display: none !important; }
+          .mobile-menu-btn { display: block !important; }
         }
       `}</style>
     </>
