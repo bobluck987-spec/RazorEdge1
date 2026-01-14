@@ -630,7 +630,7 @@ export default function Home() {
       {/* Sticky CTA Bar */}
       <div style={{
         position: 'fixed',
-        bottom: 'calc(60px + env(safe-area-inset-bottom))',
+        bottom: 'calc(84px + env(safe-area-inset-bottom))',
         left: 0,
         right: 0,
         background: '#ffffff',
