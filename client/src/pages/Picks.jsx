@@ -272,7 +272,7 @@ export default function Picks() {
                   left: 0,
                   right: 0,
                   height: 28,
-                  background: '#010000',
+                  background: '#666666',
                   zIndex: 1,
                   display: 'flex',
                   alignItems: 'center',
