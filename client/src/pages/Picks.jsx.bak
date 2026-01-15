@@ -1,15 +1,70 @@
 import React, { useState } from 'react';
-import { usePickContext } from '../context/PickContext';
-import { useAuth } from '../context/AuthContext';
-import { Target, Clock, Lock, pawPrint } from 'lucide-react';
+import { Target, TrendingUp, Clock, Lock, pawPrint } from 'lucide-react';
+
+// Mock data for demonstration
+const mockPicks = [
+  {
+    id: 1,
+    sport: 'NFL',
+    access: 'free',
+    status: 'win',
+    matchup: 'Eagles vs 49ers',
+    game_date: '2026-01-18T20:15:00',
+    pick_type: 'Spread',
+    line: 'Eagles +3.5',
+    odds: -110,
+    is_underdog: true,
+    notes: 'Eagles have covered in 7 of their last 9 playoff games. The line movement suggests sharp money is coming in on Philadelphia. San Francisco struggles against mobile QBs and their secondary has been vulnerable.'
+  },
+  {
+    id: 2,
+    sport: 'NBA',
+    access: 'premium',
+    status: 'pending',
+    matchup: 'Lakers vs Celtics',
+    game_date: '2026-01-19T19:30:00',
+    pick_type: 'Moneyline',
+    line: 'Lakers ML',
+    odds: +145,
+    is_underdog: true,
+    notes: 'Lakers are 12-4 ATS in their last 16 games as underdogs. Celtics playing their 4th game in 6 nights with key rotation players banged up.'
+  },
+  {
+    id: 3,
+    sport: 'NFL',
+    access: 'premium',
+    status: 'pending',
+    matchup: 'Chiefs vs Bills',
+    game_date: '2026-01-19T18:00:00',
+    pick_type: 'Spread',
+    line: 'Chiefs -2.5',
+    odds: -105,
+    is_underdog: false,
+    notes: 'Patrick Mahomes is 14-2 in his career in playoff games. Chiefs defense has been elite against the run, forcing teams to become one-dimensional.'
+  },
+  {
+    id: 4,
+    sport: 'NBA',
+    access: 'free',
+    status: 'loss',
+    matchup: 'Warriors vs Nuggets',
+    game_date: '2026-01-17T22:00:00',
+    pick_type: 'Over/Under',
+    line: 'Over 225.5',
+    odds: -110,
+    is_underdog: false,
+    notes: 'Both teams rank in top 10 for pace. Altitude factor in Denver typically leads to higher scoring games.'
+  }
+];
+
+// Mock user - change role to 'premium' to see unlocked picks
+const mockUser = { role: 'free' };
 
 export default function Picks() {
-  const { picks: allPicks, loading, error } = usePickContext();
-  const { user } = useAuth();
-  const [filter, setFilter] = useState('all'); // all, free, premium
+  const [filter, setFilter] = useState('all');
   const [sportFilter, setSportFilter] = useState('all');
 
-  const filteredPicks = allPicks.filter(pick => {
+  const filteredPicks = mockPicks.filter(pick => {
     if (filter !== 'all' && pick.access !== filter) return false;
     if (sportFilter !== 'all' && pick.sport !== sportFilter) return false;
     return true;
@@ -64,7 +119,7 @@ export default function Picks() {
   };
 
   const isPremiumLocked = (pick) => {
-    return pick.access === 'premium' && (!user || user.role === 'free');
+    return pick.access === 'premium' && (!mockUser || mockUser.role === 'free');
   };
 
   const hasSensitiveData = (pick) => {
@@ -81,53 +136,6 @@ export default function Picks() {
     }
     return !isPremiumLocked(pick);
   };
-
-  if (loading) {
-    return (
-      <div style={{
-        background: '#f8f8f8',
-        minHeight: '100vh',
-        color: '#010000',
-        padding: '60px 20px 100px',
-        fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center'
-      }}>
-        <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: 48, marginBottom: 20 }}>⏳</div>
-          <h3 style={{ fontSize: 24, fontWeight: 800, color: '#010000' }}>
-            Loading picks...
-          </h3>
-        </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div style={{
-        background: '#f8f8f8',
-        minHeight: '100vh',
-        color: '#010000',
-        padding: '60px 20px 100px',
-        fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center'
-      }}>
-        <div style={{ textAlign: 'center', maxWidth: 400 }}>
-          <div style={{ fontSize: 48, marginBottom: 20 }}>⚠️</div>
-          <h3 style={{ fontSize: 24, fontWeight: 800, marginBottom: 12, color: '#010000' }}>
-            Error Loading Picks
-          </h3>
-          <p style={{ fontSize: 16, color: '#666666' }}>
-            {error}
-          </p>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div style={{
@@ -265,7 +273,7 @@ export default function Picks() {
               }}
             >
               {/* Underdog Top Ribbon */}
-              {pick.is_underdog && !isPremiumLocked(pick) && shouldRenderDetails(pick) && (
+              {pick.isUnderdog && !isPremiumLocked(pick) && shouldRenderDetails(pick) && (
                 <div style={{
                   position: 'absolute',
                   top: 0,
@@ -386,7 +394,7 @@ export default function Picks() {
               {/* Header */}
               <div style={{
                 marginBottom: 16,
-                marginTop: pick.is_underdog && !isPremiumLocked(pick) && shouldRenderDetails(pick) ? 28 : 0
+                marginTop: pick.isUnderdog && !isPremiumLocked(pick) && shouldRenderDetails(pick) ? 28 : 0
               }}>
                 <div style={{ 
                   display: 'flex', 
@@ -416,7 +424,7 @@ export default function Picks() {
                       fontWeight: 600
                     }}>
                       <Clock style={{ width: 14, height: 14 }} />
-                      {formatGameTime(pick.game_date)}
+                      {formatGameTime(pick.gameTime)}
                     </div>
                   </div>
 
@@ -483,7 +491,7 @@ export default function Picks() {
                         fontWeight: 800,
                         color: '#010000'
                       }}>
-                        {pick.pick_type}
+                        {pick.pickType}
                       </div>
                     </div>
                     {pick.line && (
