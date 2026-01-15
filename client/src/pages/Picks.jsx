@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { usePickContext } from '../context/PickContext';
 import { useAuth } from '../context/AuthContext';
-import { Target, Clock, Lock, PawPrint } from 'lucide-react';
+import { Target, Clock, Lock } from 'lucide-react';
 
 export default function Picks() {
   const { picks: allPicks, loading, error } = usePickContext();
@@ -220,14 +220,14 @@ export default function Picks() {
             border: '1px solid #e0e0e0',
             boxShadow: '0 2px 8px rgba(0, 0, 0, 0.08)'
           }}>
-            {['All', 'NFL', 'NBA'].map(sport => (
+            {['all', 'NFL', 'NBA'].map(sport => (
               <button
                 key={sport}
-                onClick={() => setSportFilter(sport.toLowerCase())}
+                onClick={() => setSportFilter(sport)}
                 style={{
                   padding: '12px 24px',
-                  background: sportFilter === sport.toLowerCase() ? '#010000' : 'transparent',
-                  color: sportFilter === sport.toLowerCase() ? '#ffffff' : '#010000',
+                  background: sportFilter === sport ? '#010000' : 'transparent',
+                  color: sportFilter === sport ? '#ffffff' : '#010000',
                   border: 'none',
                   borderRadius: 8,
                   cursor: 'pointer',
@@ -236,7 +236,7 @@ export default function Picks() {
                   transition: 'all 0.2s ease'
                 }}
               >
-                {sport}
+                {sport === 'all' ? 'All' : sport}
               </button>
             ))}
           </div>
@@ -272,7 +272,7 @@ export default function Picks() {
                   left: 0,
                   right: 0,
                   height: 28,
-                  background: '#F8F8F8',
+                  background: '#f8f8f8',
                   zIndex: 1,
                   display: 'flex',
                   alignItems: 'center',
@@ -318,7 +318,8 @@ export default function Picks() {
                       fontSize: 12,
                       fontWeight: 800,
                       letterSpacing: '0.5px',
-                      color: '#010000'
+                      color: '#010000',
+                      whiteSpace: 'nowrap'
                     }}>
                       {pick.sport}
                     </span>
@@ -328,9 +329,10 @@ export default function Picks() {
                       display: 'flex',
                       alignItems: 'center',
                       gap: 6,
-                      fontWeight: 600
+                      fontWeight: 600,
+                      whiteSpace: 'nowrap'
                     }}>
-                      <Clock style={{ width: 14, height: 14 }} />
+                      <Clock style={{ width: 14, height: 14, flexShrink: 0 }} />
                       {formatGameTime(pick.game_date)}
                     </div>
                   </div>
@@ -388,11 +390,11 @@ export default function Picks() {
                 <div style={{ 
                   display: 'flex', 
                   justifyContent: 'space-between',
-                  alignItems: 'center',
+                  alignItems: 'flex-start',
                   marginBottom: 18,
                   gap: 12
                 }}>
-                  <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
+                  <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'nowrap', minWidth: 0 }}>
                     <span style={{
                       padding: '6px 14px',
                       background: '#f5f5f5',
@@ -400,20 +402,24 @@ export default function Picks() {
                       fontSize: 12,
                       fontWeight: 800,
                       letterSpacing: '0.5px',
-                      color: '#010000'
+                      color: '#010000',
+                      whiteSpace: 'nowrap',
+                      flexShrink: 0
                     }}>
                       {pick.sport}
                     </span>
                     <div style={{
-                      fontSize: 13,
+                      fontSize: 12,
                       color: '#666666',
                       display: 'flex',
                       alignItems: 'center',
                       gap: 6,
-                      fontWeight: 600
+                      fontWeight: 600,
+                      whiteSpace: 'nowrap',
+                      flexShrink: 0
                     }}>
-                      <Clock style={{ width: 14, height: 14 }} />
-                      {formatGameTime(pick.game_date)}
+                      <Clock style={{ width: 14, height: 14, flexShrink: 0 }} />
+                      <span>{formatGameTime(pick.game_date)}</span>
                     </div>
                   </div>
 
@@ -525,7 +531,8 @@ export default function Picks() {
                     </div>
                     <div style={{
                       display: 'flex',
-                      alignItems: 'flex-end'
+                      alignItems: 'flex-end',
+                      justifyContent: 'flex-end'
                     }}>
                       <div style={{
                         padding: '8px 16px',
