@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { usePickContext } from '../context/PickContext';
 import { useAuth } from '../context/AuthContext';
-import { Target, Clock, Lock, pawPrint } from 'lucide-react';
+import { Target, Clock, Lock, PawPrint } from 'lucide-react';
 
 export default function Picks() {
   const { picks: allPicks, loading, error } = usePickContext();
@@ -223,11 +223,11 @@ export default function Picks() {
             {['All', 'NFL', 'NBA'].map(sport => (
               <button
                 key={sport}
-                onClick={() => setSportFilter(sport)}
+                onClick={() => setSportFilter(sport.toLowerCase())}
                 style={{
                   padding: '12px 24px',
-                  background: sportFilter === sport ? '#010000' : 'transparent',
-                  color: sportFilter === sport ? '#ffffff' : '#010000',
+                  background: sportFilter === sport.toLowerCase() ? '#010000' : 'transparent',
+                  color: sportFilter === sport.toLowerCase() ? '#ffffff' : '#010000',
                   border: 'none',
                   borderRadius: 8,
                   cursor: 'pointer',
@@ -272,23 +272,20 @@ export default function Picks() {
                   left: 0,
                   right: 0,
                   height: 28,
-                  background: 'linear-gradient(90deg, #e73725 0%, #ff4b35 100%)',
+                  background: '#010000',
                   zIndex: 1,
                   display: 'flex',
                   alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: 8
+                  paddingLeft: 16
                 }}>
-                  <pawPrint style={{ width: 14, height: 14, color: '#ffffff' }} />
                   <span style={{
-                    color: '#ffffff',
+                    color: '#e73725',
                     fontSize: 11,
                     fontWeight: 800,
                     letterSpacing: '1px'
                   }}>
                     UNDERDOG PICK
                   </span>
-                  <pawPrint style={{ width: 14, height: 14, color: '#ffffff' }} />
                 </div>
               )}
 
