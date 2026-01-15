@@ -530,8 +530,11 @@ export default function Picks() {
                         {pick.odds > 0 ? '+' : ''}{pick.odds}
                       </div>
                     </div>
-                    <div style={{
-                      marginLeft: 'auto'
+                   <div style={{
+                      display: 'flex',
+                      alignItems: 'flex-end',
+                      justifyContent: 'flex-end',
+                      gridColumn: '-1'
                     }}>
                       <div style={{
                         padding: '8px 16px',
