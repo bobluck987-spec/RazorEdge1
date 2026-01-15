@@ -456,7 +456,7 @@ export default function Picks() {
                 </div>
               </div>
 
-           {/* Pick Details */}
+         {/* Pick Details */}
               {shouldRenderDetails(pick) && (
                 <div style={{
                   background: '#f8f8f8',
@@ -466,10 +466,9 @@ export default function Picks() {
                   border: '1px solid #e0e0e0'
                 }}>
                   <div style={{
-                    display: 'flex',
-                    flexWrap: 'wrap',
-                    gap: 16,
-                    alignItems: 'flex-end'
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(auto-fit, minmax(110px, 1fr))',
+                    gap: 16
                   }}>
                     <div>
                       <div style={{
@@ -530,7 +529,7 @@ export default function Picks() {
                         {pick.odds > 0 ? '+' : ''}{pick.odds}
                       </div>
                     </div>
-                   <div style={{
+                    <div style={{
                       display: 'flex',
                       alignItems: 'flex-end',
                       justifyContent: 'flex-end',
