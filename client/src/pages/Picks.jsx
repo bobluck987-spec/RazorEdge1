@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Target, TrendingUp, Clock, Lock, PawPrint } from 'lucide-react';
+import { Target, TrendingUp, Clock, Lock, pawPrint } from 'lucide-react';
 
 // Mock data for demonstration
 const mockPicks = [
@@ -287,7 +287,7 @@ export default function Picks() {
                   justifyContent: 'center',
                   gap: 8
                 }}>
-                  <PawPrint style={{ width: 14, height: 14, color: '#ffffff' }} />
+                  <pawPrint style={{ width: 14, height: 14, color: '#ffffff' }} />
                   <span style={{
                     color: '#ffffff',
                     fontSize: 11,
@@ -296,7 +296,7 @@ export default function Picks() {
                   }}>
                     UNDERDOG PICK
                   </span>
-                  <PawPrint style={{ width: 14, height: 14, color: '#ffffff' }} />
+                  <pawPrint style={{ width: 14, height: 14, color: '#ffffff' }} />
                 </div>
               )}
 
