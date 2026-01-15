@@ -15,10 +15,11 @@ export function PickProvider({ children }) {
       setLoading(true);
       setError(null);
       
+      // USE THE FUNCTION HERE instead of direct table query
       const { data, error: fetchError } = await supabase
-        .from('picks')
-        .select('*')
-        .order('created_at', { ascending: false });
+        .rpc('get_picks_for_user', {
+          user_role: user?.role || 'free'
+        });
       
       if (fetchError) throw fetchError;
       

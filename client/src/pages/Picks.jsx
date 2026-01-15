@@ -1,14 +1,70 @@
 import React, { useState } from 'react';
-import { usePickContext } from '../context/PickContext';
-import { useAuth } from '../context/AuthContext';
+import { Target, TrendingUp, Clock, Lock, PawPrint } from 'lucide-react';
+
+// Mock data for demonstration
+const mockPicks = [
+  {
+    id: 1,
+    sport: 'NFL',
+    access: 'free',
+    status: 'win',
+    matchup: 'Eagles vs 49ers',
+    game_date: '2026-01-18T20:15:00',
+    pick_type: 'Spread',
+    line: 'Eagles +3.5',
+    odds: -110,
+    is_underdog: true,
+    notes: 'Eagles have covered in 7 of their last 9 playoff games. The line movement suggests sharp money is coming in on Philadelphia. San Francisco struggles against mobile QBs and their secondary has been vulnerable.'
+  },
+  {
+    id: 2,
+    sport: 'NBA',
+    access: 'premium',
+    status: 'pending',
+    matchup: 'Lakers vs Celtics',
+    game_date: '2026-01-19T19:30:00',
+    pick_type: 'Moneyline',
+    line: 'Lakers ML',
+    odds: +145,
+    is_underdog: true,
+    notes: 'Lakers are 12-4 ATS in their last 16 games as underdogs. Celtics playing their 4th game in 6 nights with key rotation players banged up.'
+  },
+  {
+    id: 3,
+    sport: 'NFL',
+    access: 'premium',
+    status: 'pending',
+    matchup: 'Chiefs vs Bills',
+    game_date: '2026-01-19T18:00:00',
+    pick_type: 'Spread',
+    line: 'Chiefs -2.5',
+    odds: -105,
+    is_underdog: false,
+    notes: 'Patrick Mahomes is 14-2 in his career in playoff games. Chiefs defense has been elite against the run, forcing teams to become one-dimensional.'
+  },
+  {
+    id: 4,
+    sport: 'NBA',
+    access: 'free',
+    status: 'loss',
+    matchup: 'Warriors vs Nuggets',
+    game_date: '2026-01-17T22:00:00',
+    pick_type: 'Over/Under',
+    line: 'Over 225.5',
+    odds: -110,
+    is_underdog: false,
+    notes: 'Both teams rank in top 10 for pace. Altitude factor in Denver typically leads to higher scoring games.'
+  }
+];
+
+// Mock user - change role to 'premium' to see unlocked picks
+const mockUser = { role: 'free' };
 
 export default function Picks() {
-  const { picks: allPicks, loading } = usePickContext();
-  const { user } = useAuth();
-  const [filter, setFilter] = useState('all'); // all, free, premium
+  const [filter, setFilter] = useState('all');
   const [sportFilter, setSportFilter] = useState('all');
 
-  const filteredPicks = allPicks.filter(pick => {
+  const filteredPicks = mockPicks.filter(pick => {
     if (filter !== 'all' && pick.access !== filter) return false;
     if (sportFilter !== 'all' && pick.sport !== sportFilter) return false;
     return true;
@@ -16,50 +72,109 @@ export default function Picks() {
 
   const getStatusColor = (status) => {
     switch(status) {
-      case 'win': return '#10b981';
+      case 'win': return '#5dc110';
       case 'loss': return '#ef4444';
       case 'push': return '#f59e0b';
-      default: return '#64748b';
+      default: return '#666666';
     }
   };
 
-  const getStatusIcon = (status) => {
+  const getStatusText = (status) => {
     switch(status) {
-      case 'win': return '✓';
-      case 'loss': return '✗';
-      case 'push': return '↔';
-      default: return '○';
+      case 'win': return 'WON';
+      case 'loss': return 'LOST';
+      case 'push': return 'PUSH';
+      default: return 'PENDING';
+    }
+  };
+
+  const formatGameTime = (gameTime) => {
+    const gameDate = new Date(gameTime);
+    const now = new Date();
+    
+    // Reset hours to compare dates only
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    const gameDay = new Date(gameDate.getFullYear(), gameDate.getMonth(), gameDate.getDate());
+    
+    const timeStr = gameDate.toLocaleString('en-US', {
+      hour: 'numeric',
+      minute: '2-digit'
+    });
+    
+    if (gameDay.getTime() === today.getTime()) {
+      return `Today, ${timeStr}`;
+    } else if (gameDay.getTime() === tomorrow.getTime()) {
+      return `Tomorrow, ${timeStr}`;
+    } else {
+      return gameDate.toLocaleString('en-US', {
+        weekday: 'short',
+        month: 'short',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: '2-digit'
+      });
     }
   };
 
   const isPremiumLocked = (pick) => {
-  return pick.access === 'premium' && (!user || user.role === 'free');
+    return pick.access === 'premium' && (!mockUser || mockUser.role === 'free');
   };
 
-  //if (loading) {
+  const hasSensitiveData = (pick) => {
+    // Check if pick has any sensitive fields that shouldn't be exposed
+    return pick.pick_type || pick.line || pick.odds || pick.notes || 
+           pick.status || pick.is_underdog !== undefined;
+  };
+
+  const shouldRenderDetails = (pick) => {
+    // Only render details if NOT premium locked, or if somehow sensitive data leaked
+    if (isPremiumLocked(pick) && hasSensitiveData(pick)) {
+      console.warn('Security Warning: Premium pick contains sensitive data for non-premium user');
+      return false;
+    }
+    return !isPremiumLocked(pick);
+  };
+
   return (
     <div style={{
-      background: 'linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%)',
+      background: '#f8f8f8',
       minHeight: '100vh',
-      color: 'white',
-      padding: '40px 20px',
-      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
-      paddingBottom: 80 // Add this for mobile tabs
+      color: '#010000',
+      padding: '60px 20px 100px',
+      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
     }}>
       <div style={{ maxWidth: 1200, margin: '0 auto' }}>
         {/* Header */}
-        <div style={{ marginBottom: 40 }}>
-          <h1 style={{
-            fontSize: 'clamp(32px, 5vw, 48px)',
-            fontWeight: 900,
-            margin: '0 0 10px',
-            background: 'linear-gradient(135deg, #fff 0%, #94a3b8 100%)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent'
+        <div style={{ marginBottom: 48 }}>
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 12,
+            marginBottom: 16,
+            justifyContent: 'center'
           }}>
-            Expert Picks
-          </h1>
-          <p style={{ fontSize: 18, color: '#94a3b8', margin: 0 }}>
+            <Target style={{ width: 32, height: 32, color: '#e73725' }} />
+            <h1 style={{
+              fontSize: 'clamp(32px, 5vw, 48px)',
+              fontWeight: 900,
+              margin: 0,
+              color: '#010000',
+              letterSpacing: '-0.02em'
+            }}>
+              Expert Picks
+            </h1>
+          </div>
+          <p style={{ 
+            fontSize: 18, 
+            color: '#4a4a4a', 
+            margin: 0,
+            textAlign: 'center',
+            maxWidth: 600,
+            marginLeft: 'auto',
+            marginRight: 'auto'
+          }}>
             Data-driven predictions with proven results
           </p>
         </div>
@@ -68,26 +183,28 @@ export default function Picks() {
         <div style={{
           display: 'flex',
           gap: 15,
-          marginBottom: 30,
+          marginBottom: 40,
           flexWrap: 'wrap',
+          justifyContent: 'center',
           alignItems: 'center'
         }}>
           <div style={{
             display: 'flex',
-            gap: 10,
-            background: 'rgba(255, 255, 255, 0.05)',
+            gap: 8,
+            background: '#ffffff',
             padding: 6,
             borderRadius: 12,
-            border: '1px solid rgba(255, 255, 255, 0.1)'
+            border: '1px solid #e0e0e0',
+            boxShadow: '0 2px 8px rgba(0, 0, 0, 0.08)'
           }}>
             {['all', 'free', 'premium'].map(f => (
               <button
                 key={f}
                 onClick={() => setFilter(f)}
                 style={{
-                  padding: '10px 20px',
-                  background: filter === f ? 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)' : 'transparent',
-                  color: 'white',
+                  padding: '12px 24px',
+                  background: filter === f ? '#e73725' : 'transparent',
+                  color: filter === f ? '#ffffff' : '#010000',
                   border: 'none',
                   borderRadius: 8,
                   cursor: 'pointer',
@@ -104,24 +221,25 @@ export default function Picks() {
 
           <div style={{
             display: 'flex',
-            gap: 10,
-            background: 'rgba(255, 255, 255, 0.05)',
+            gap: 8,
+            background: '#ffffff',
             padding: 6,
             borderRadius: 12,
-            border: '1px solid rgba(255, 255, 255, 0.1)'
+            border: '1px solid #e0e0e0',
+            boxShadow: '0 2px 8px rgba(0, 0, 0, 0.08)'
           }}>
             {['all', 'NFL', 'NBA'].map(sport => (
               <button
                 key={sport}
                 onClick={() => setSportFilter(sport)}
                 style={{
-                  padding: '10px 20px',
-                  background: sportFilter === sport ? 'rgba(255, 255, 255, 0.1)' : 'transparent',
-                  color: 'white',
+                  padding: '12px 24px',
+                  background: sportFilter === sport ? '#010000' : 'transparent',
+                  color: sportFilter === sport ? '#ffffff' : '#010000',
                   border: 'none',
                   borderRadius: 8,
                   cursor: 'pointer',
-                  fontWeight: 600,
+                  fontWeight: 700,
                   fontSize: 14,
                   transition: 'all 0.2s ease'
                 }}
@@ -135,269 +253,319 @@ export default function Picks() {
         {/* Picks Grid */}
         <div style={{
           display: 'grid',
-          gap: 20
+          gap: 24
         }}>
-          {filteredPicks.map((pick, idx) => (
+          {filteredPicks.map((pick) => (
             <div
               key={pick.id}
               style={{
-                background: isPremiumLocked(pick) 
-                  ? 'linear-gradient(135deg, rgba(251, 191, 36, 0.15) 0%, rgba(245, 158, 11, 0.1) 100%)'
-                  : 'linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(37, 99, 235, 0.05) 100%)',
+                background: '#ffffff',
                 borderRadius: 16,
                 border: isPremiumLocked(pick) 
-                  ? '1px solid rgba(251, 191, 36, 0.3)'
-                  : '1px solid rgba(59, 130, 246, 0.2)',
-                padding: 25,
+                  ? '2px solid #e73725'
+                  : '1px solid #e0e0e0',
+                padding: 22,
                 position: 'relative',
                 overflow: 'hidden',
                 transition: 'all 0.3s ease',
-                cursor: 'pointer',
-                opacity: isPremiumLocked(pick) ? 0.6 : 1,
-                filter: isPremiumLocked(pick) ? 'blur(2px)' : 'none'
-              }}
-              onMouseEnter={(e) => {
-                if (!isPremiumLocked(pick)) {
-                  e.currentTarget.style.transform = 'translateY(-4px)';
-                  e.currentTarget.style.borderColor = 'rgba(59, 130, 246, 0.4)';
-                }
-              }}
-              onMouseLeave={(e) => {
-                if (!isPremiumLocked(pick)) {
-                  e.currentTarget.style.transform = 'translateY(0)';
-                  e.currentTarget.style.borderColor = 'rgba(59, 130, 246, 0.2)';
-                }
+                boxShadow: '0.3px 0.5px 0.5px hsl(0 0% 70% / 0.38), 0.4px 0.8px 0.7px -0.5px hsl(0 0% 70% / 0.35), 0.7px 1.4px 1.3px -1px hsl(0 0% 70% / 0.32)',
+                minHeight: isPremiumLocked(pick) ? '350px' : 'auto'
               }}
             >
+              {/* Underdog Top Ribbon */}
+              {pick.isUnderdog && !isPremiumLocked(pick) && shouldRenderDetails(pick) && (
+                <div style={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  height: 28,
+                  background: 'linear-gradient(90deg, #e73725 0%, #ff4b35 100%)',
+                  zIndex: 1,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: 8
+                }}>
+                  <PawPrint style={{ width: 14, height: 14, color: '#ffffff' }} />
+                  <span style={{
+                    color: '#ffffff',
+                    fontSize: 11,
+                    fontWeight: 800,
+                    letterSpacing: '1px'
+                  }}>
+                    UNDERDOG PICK
+                  </span>
+                  <PawPrint style={{ width: 14, height: 14, color: '#ffffff' }} />
+                </div>
+              )}
+
               {/* Premium Lock Overlay */}
               {isPremiumLocked(pick) && (
                 <div style={{
                   position: 'absolute',
-                  top: '50%',
-                  left: '50%',
-                  transform: 'translate(-50%, -50%)',
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  background: 'rgba(255, 255, 255, 0.98)',
                   zIndex: 10,
-                  textAlign: 'center'
+                  padding: '22px',
+                  display: 'flex',
+                  flexDirection: 'column'
                 }}>
+                  {/* Sport and Date at top */}
                   <div style={{
-                    fontSize: 48,
-                    marginBottom: 10
-                  }}>🔒</div>
-                  <div style={{
-                    fontSize: 18,
-                    fontWeight: 700,
-                    marginBottom: 10,
-                    color: '#fbbf24'
+                    display: 'flex',
+                    gap: 8,
+                    alignItems: 'center',
+                    flexWrap: 'wrap',
+                    marginBottom: '30px'
                   }}>
-                    Premium Pick
+                    <span style={{
+                      padding: '6px 14px',
+                      background: '#f5f5f5',
+                      borderRadius: 6,
+                      fontSize: 12,
+                      fontWeight: 800,
+                      letterSpacing: '0.5px',
+                      color: '#010000'
+                    }}>
+                      {pick.sport}
+                    </span>
+                    <div style={{
+                      fontSize: 13,
+                      color: '#666666',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 6,
+                      fontWeight: 600
+                    }}>
+                      <Clock style={{ width: 14, height: 14 }} />
+                      {formatGameTime(pick.game_date)}
+                    </div>
                   </div>
-                  <button style={{
-                    padding: '12px 24px',
-                    background: 'linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%)',
-                    color: '#0a0e27',
-                    border: 'none',
-                    borderRadius: 8,
-                    cursor: 'pointer',
-                    fontWeight: 700,
-                    fontSize: 14
+
+                  {/* Centered content */}
+                  <div style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    flex: 1
                   }}>
-                    Upgrade to View
-                  </button>
+                    <Lock style={{ width: 48, height: 48, color: '#e73725', marginBottom: 20 }} />
+                    <div style={{
+                      fontSize: 24,
+                      fontWeight: 800,
+                      marginBottom: 12,
+                      color: '#010000'
+                    }}>
+                      Premium Pick
+                    </div>
+                    <p style={{
+                      fontSize: 15,
+                      color: '#4a4a4a',
+                      marginBottom: 24,
+                      textAlign: 'center',
+                      maxWidth: 300,
+                      lineHeight: 1.5
+                    }}>
+                      Upgrade to unlock expert analysis and full pick details
+                    </p>
+                    <button style={{
+                      padding: '14px 32px',
+                      background: '#e73725',
+                      color: '#ffffff',
+                      border: 'none',
+                      borderRadius: 10,
+                      cursor: 'pointer',
+                      fontWeight: 800,
+                      fontSize: 15,
+                      boxShadow: '0 4px 12px rgba(231, 55, 37, 0.3)',
+                      transition: 'all 0.2s ease'
+                    }}>
+                      Upgrade to Premium
+                    </button>
+                  </div>
                 </div>
               )}
 
               {/* Header */}
               <div style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'start',
-                marginBottom: 20
+                marginBottom: 16,
+                marginTop: pick.isUnderdog && !isPremiumLocked(pick) && shouldRenderDetails(pick) ? 28 : 0
               }}>
-                <div style={{ flex: 1 }}>
-                  <div style={{ display: 'flex', gap: 10, alignItems: 'center', marginBottom: 8 }}>
+                <div style={{ 
+                  display: 'flex', 
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  marginBottom: 18,
+                  gap: 12
+                }}>
+                  <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
                     <span style={{
-                      padding: '4px 12px',
-                      background: 'rgba(255, 255, 255, 0.1)',
+                      padding: '6px 14px',
+                      background: '#f5f5f5',
                       borderRadius: 6,
                       fontSize: 12,
-                      fontWeight: 700,
-                      letterSpacing: '0.5px'
+                      fontWeight: 800,
+                      letterSpacing: '0.5px',
+                      color: '#010000'
                     }}>
                       {pick.sport}
                     </span>
-                    <span style={{
-                      padding: '4px 12px',
-                      background: isPremiumLocked(pick) 
-                        ? 'linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%)'
-                        : 'rgba(255, 255, 255, 0.1)',
-                      color: isPremiumLocked(pick) ? '#0a0e27' : 'white',
-                      borderRadius: 6,
-                      fontSize: 12,
-                      fontWeight: 700,
-                      letterSpacing: '0.5px'
-                    }}>
-                      {pick.access.toUpperCase()}
-                    </span>
                     <div style={{
-                      width: 32,
-                      height: 32,
-                      borderRadius: '50%',
-                      background: getStatusColor(pick.status),
+                      fontSize: 13,
+                      color: '#666666',
                       display: 'flex',
                       alignItems: 'center',
-                      justifyContent: 'center',
-                      fontSize: 16,
-                      fontWeight: 900,
-                      color: 'white'
+                      gap: 6,
+                      fontWeight: 600
                     }}>
-                      {getStatusIcon(pick.status)}
+                      <Clock style={{ width: 14, height: 14 }} />
+                      {formatGameTime(pick.gameTime)}
                     </div>
                   </div>
 
+                  <span style={{
+                    padding: '6px 14px',
+                    background: pick.access === 'premium' ? '#e73725' : '#5dc110',
+                    color: '#ffffff',
+                    borderRadius: 6,
+                    fontSize: 12,
+                    fontWeight: 800,
+                    letterSpacing: '0.5px',
+                    whiteSpace: 'nowrap',
+                    flexShrink: 0
+                  }}>
+                    {pick.access === 'premium' ? 'PREMIUM PICK' : 'FREE PICK'}
+                  </span>
+                </div>
+
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 12
+                }}>
                   <h3 style={{
-                    fontSize: 28,
+                    fontSize: 26,
                     fontWeight: 900,
-                    margin: '0 0 5px',
-                    color: 'white'
+                    margin: 0,
+                    color: '#010000',
+                    letterSpacing: '-0.01em',
+                    flex: 1
                   }}>
                     {pick.matchup}
                   </h3>
-                  <div style={{
-                    fontSize: 14,
-                    color: '#94a3b8'
-                  }}>
-                    {new Date(pick.gameTime).toLocaleString('en-US', {
-                      weekday: 'short',
-                      month: 'short',
-                      day: 'numeric',
-                      hour: 'numeric',
-                      minute: '2-digit'
-                    })}
-                  </div>
-                </div>
-
-                {/* Confidence Badge */}
-                <div style={{
-                  background: `conic-gradient(#3b82f6 ${pick.confidence * 3.6}deg, rgba(255, 255, 255, 0.1) 0deg)`,
-                  borderRadius: '50%',
-                  width: 80,
-                  height: 80,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  position: 'relative'
-                }}>
-                  <div style={{
-                    background: '#1a1f3a',
-                    borderRadius: '50%',
-                    width: 64,
-                    height: 64,
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    justifyContent: 'center'
-                  }}>
-                    <div style={{ fontSize: 24, fontWeight: 900, color: '#3b82f6' }}>
-                      {pick.confidence}
-                    </div>
-                    <div style={{ fontSize: 10, color: '#64748b', fontWeight: 700 }}>
-                      CONF
-                    </div>
-                  </div>
                 </div>
               </div>
 
               {/* Pick Details */}
-              <div style={{
-                background: 'rgba(0, 0, 0, 0.2)',
-                padding: 20,
-                borderRadius: 12,
-                marginBottom: 15
-              }}>
+              {shouldRenderDetails(pick) && (
                 <div style={{
-                  display: 'grid',
-                  gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))',
-                  gap: 20
+                  background: '#f8f8f8',
+                  padding: 18,
+                  borderRadius: 12,
+                  marginBottom: 16,
+                  border: '1px solid #e0e0e0'
                 }}>
-                  <div>
-                    <div style={{
-                      fontSize: 12,
-                      color: '#64748b',
-                      marginBottom: 5,
-                      fontWeight: 600
-                    }}>
-                      PICK TYPE
-                    </div>
-                    <div style={{
-                      fontSize: 18,
-                      fontWeight: 800,
-                      color: 'white'
-                    }}>
-                      {pick.pickType}
-                    </div>
-                  </div>
-                  {pick.line && (
+                  <div style={{
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(auto-fit, minmax(110px, 1fr))',
+                    gap: 16
+                  }}>
                     <div>
                       <div style={{
-                        fontSize: 12,
-                        color: '#64748b',
-                        marginBottom: 5,
-                        fontWeight: 600
+                        fontSize: 11,
+                        color: '#666666',
+                        marginBottom: 6,
+                        fontWeight: 700,
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.5px'
                       }}>
-                        LINE
+                        Pick Type
                       </div>
                       <div style={{
                         fontSize: 18,
                         fontWeight: 800,
-                        color: '#3b82f6'
+                        color: '#010000'
                       }}>
-                        {pick.line}
+                        {pick.pickType}
                       </div>
                     </div>
-                  )}
-                  <div>
-                    <div style={{
-                      fontSize: 12,
-                      color: '#64748b',
-                      marginBottom: 5,
-                      fontWeight: 600
-                    }}>
-                      ODDS
-                    </div>
-                    <div style={{
-                      fontSize: 18,
-                      fontWeight: 800,
-                      color: pick.odds > 0 ? '#10b981' : 'white'
-                    }}>
-                      {pick.odds > 0 ? '+' : ''}{pick.odds}
-                    </div>
-                  </div>
-                  {pick.isUnderdog && (
+                    {pick.line && (
+                      <div>
+                        <div style={{
+                          fontSize: 11,
+                          color: '#666666',
+                          marginBottom: 6,
+                          fontWeight: 700,
+                          textTransform: 'uppercase',
+                          letterSpacing: '0.5px'
+                        }}>
+                          Line
+                        </div>
+                        <div style={{
+                          fontSize: 18,
+                          fontWeight: 800,
+                          color: '#e73725'
+                        }}>
+                          {pick.line}
+                        </div>
+                      </div>
+                    )}
                     <div>
                       <div style={{
-                        padding: '6px 12px',
-                        background: 'linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)',
+                        fontSize: 11,
+                        color: '#666666',
+                        marginBottom: 6,
+                        fontWeight: 700,
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.5px'
+                      }}>
+                        Odds
+                      </div>
+                      <div style={{
+                        fontSize: 18,
+                        fontWeight: 800,
+                        color: pick.odds > 0 ? '#5dc110' : '#010000'
+                      }}>
+                        {pick.odds > 0 ? '+' : ''}{pick.odds}
+                      </div>
+                    </div>
+                    <div style={{
+                      display: 'flex',
+                      alignItems: 'flex-end'
+                    }}>
+                      <div style={{
+                        padding: '8px 16px',
+                        background: getStatusColor(pick.status),
                         borderRadius: 8,
                         fontSize: 12,
                         fontWeight: 800,
+                        color: '#ffffff',
                         textAlign: 'center',
-                        marginTop: 15
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 6,
+                        letterSpacing: '0.5px'
                       }}>
-                        🔥 UNDERDOG
+                        {getStatusText(pick.status)}
                       </div>
                     </div>
-                  )}
+                  </div>
                 </div>
-              </div>
+              )}
 
               {/* Analysis */}
-              {!isPremiumLocked(pick) && (
+              {shouldRenderDetails(pick) && pick.notes && (
                 <div>
                   <div style={{
-                    fontSize: 12,
-                    color: '#64748b',
-                    marginBottom: 8,
-                    fontWeight: 700,
+                    fontSize: 11,
+                    color: '#666666',
+                    marginBottom: 10,
+                    fontWeight: 800,
                     textTransform: 'uppercase',
                     letterSpacing: '1px'
                   }}>
@@ -405,8 +573,8 @@ export default function Picks() {
                   </div>
                   <p style={{
                     fontSize: 15,
-                    color: '#cbd5e1',
-                    lineHeight: 1.6,
+                    color: '#4a4a4a',
+                    lineHeight: 1.7,
                     margin: 0
                   }}>
                     {pick.notes}
@@ -421,20 +589,20 @@ export default function Picks() {
           <div style={{
             textAlign: 'center',
             padding: 80,
-            background: 'rgba(255, 255, 255, 0.05)',
+            background: '#ffffff',
             borderRadius: 16,
-            border: '1px solid rgba(255, 255, 255, 0.1)'
+            border: '1px solid #e0e0e0'
           }}>
             <div style={{ fontSize: 48, marginBottom: 20 }}>📊</div>
             <h3 style={{
               fontSize: 24,
               fontWeight: 800,
               marginBottom: 10,
-              color: 'white'
+              color: '#010000'
             }}>
               No picks match your filters
             </h3>
-            <p style={{ fontSize: 16, color: '#94a3b8' }}>
+            <p style={{ fontSize: 16, color: '#666666' }}>
               Try adjusting your filters to see more picks
             </p>
           </div>
