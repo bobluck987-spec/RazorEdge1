@@ -506,7 +506,11 @@ export default function Header() {
         zIndex: 900,
         background: '#010000',
         borderTop: '1px solid #262626',
-        padding: '12px 0 max(12px, env(safe-area-inset-bottom))'
+        padding: '12px 0 max(12px, env(safe-area-inset-bottom))',
+        transform: 'translateZ(0)', // Force GPU acceleration
+        WebkitTransform: 'translateZ(0)', // For Safari
+        backfaceVisibility: 'hidden', // Prevent flickering
+        WebkitBackfaceVisibility: 'hidden'
       }}>
         <div style={{
           position: 'relative',

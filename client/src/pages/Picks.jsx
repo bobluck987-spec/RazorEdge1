@@ -230,7 +230,9 @@ export default function Picks() {
           gap: 8,
           marginBottom: 24,
           justifyContent: 'center',
-          flexWrap: 'wrap'
+          flexWrap: 'wrap',
+          width: '100%',
+          overflow: 'hidden'
         }}>
           <div style={{
             display: 'flex',
@@ -239,19 +241,24 @@ export default function Picks() {
             padding: 6,
             borderRadius: 12,
             border: '1px solid #e0e0e0',
-            boxShadow: '0 2px 8px rgba(0, 0, 0, 0.08)'
+            boxShadow: '0 2px 8px rgba(0, 0, 0, 0.08)',
+            flexWrap: 'wrap',
+            maxWidth: '100%'
           }}>
             {[
               { value: 'upcoming', label: 'Upcoming' },
-              { value: 'week', label: 'This Week' },
-              { value: 'month', label: 'This Month' },
-              { value: 'ytd', label: 'Year to Date' }
+              { value: 'week', label: 'Week' },
+              { value: 'month', label: 'Month' },
+              { value: 'ytd', label: 'YTD' }
             ].map(range => (
               <button
                 key={range.value}
-                onClick={() => setDateRange(range.value)}
+                onClick={(e) => { 
+                  e.preventDefault();
+                  setDateRange(range.value);
+                }}
                 style={{
-                  padding: '10px 20px',
+                  padding: '10px 16px',
                   background: dateRange === range.value ? '#e73725' : 'transparent',
                   color: dateRange === range.value ? '#ffffff' : '#010000',
                   border: 'none',
@@ -260,7 +267,8 @@ export default function Picks() {
                   fontWeight: 700,
                   fontSize: 13,
                   transition: 'all 0.2s ease',
-                  whiteSpace: 'nowrap'
+                  whiteSpace: 'nowrap',
+                  flexShrink: 0
                 }}
               >
                 {range.label}
@@ -290,7 +298,10 @@ export default function Picks() {
             {['all', 'free', 'premium'].map(f => (
               <button
                 key={f}
-                onClick={() => setFilter(f)}
+                onClick={(e) => {
+                  e.preventDefault();
+                  setFilter(f);
+                }}
                 style={{
                   padding: '12px 24px',
                   background: filter === f ? '#e73725' : 'transparent',
