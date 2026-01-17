@@ -444,7 +444,8 @@ export default function AdminDashboard() {
                         borderRadius: 8,
                         border: '1px solid #e0e0e0',
                         fontSize: 15,
-                        fontFamily: 'inherit'
+                        fontFamily: 'inherit',
+                        color: '#010000'
                       }}
                     />
                   </div>
@@ -462,7 +463,8 @@ export default function AdminDashboard() {
                         borderRadius: 8,
                         border: '1px solid #e0e0e0',
                         fontSize: 15,
-                        fontFamily: 'inherit'
+                        fontFamily: 'inherit',
+                        color: '#010000'
                       }}
                     />
                   </div>
@@ -478,7 +480,8 @@ export default function AdminDashboard() {
                         borderRadius: 8,
                         border: '1px solid #e0e0e0',
                         fontSize: 15,
-                        fontFamily: 'inherit'
+                        fontFamily: 'inherit',
+                        color: '#010000'
                       }}
                     >
                       <option value="Spread">Spread</option>
@@ -500,7 +503,8 @@ export default function AdminDashboard() {
                         borderRadius: 8,
                         border: '1px solid #e0e0e0',
                         fontSize: 15,
-                        fontFamily: 'inherit'
+                        fontFamily: 'inherit',
+                        color: '#010000'
                       }}
                     />
                   </div>
@@ -518,7 +522,8 @@ export default function AdminDashboard() {
                         borderRadius: 8,
                         border: '1px solid #e0e0e0',
                         fontSize: 15,
-                        fontFamily: 'inherit'
+                        fontFamily: 'inherit',
+                        color: '#010000'
                       }}
                     />
                   </div>
@@ -535,7 +540,8 @@ export default function AdminDashboard() {
                         borderRadius: 8,
                         border: '1px solid #e0e0e0',
                         fontSize: 15,
-                        fontFamily: 'inherit'
+                        fontFamily: 'inherit',
+                        color: '#010000'
                       }}
                     />
                   </div>
@@ -551,7 +557,8 @@ export default function AdminDashboard() {
                         borderRadius: 8,
                         border: '1px solid #e0e0e0',
                         fontSize: 15,
-                        fontFamily: 'inherit'
+                        fontFamily: 'inherit',
+                        color: '#010000'
                       }}
                     >
                       <option value="free">Free</option>
@@ -594,7 +601,8 @@ export default function AdminDashboard() {
                       border: '1px solid #e0e0e0',
                       fontSize: 15,
                       fontFamily: 'inherit',
-                      resize: 'vertical'
+                      resize: 'vertical',
+                      color: '#010000'
                     }}
                   />
                 </div>
