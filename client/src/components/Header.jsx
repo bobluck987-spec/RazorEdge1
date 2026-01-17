@@ -168,14 +168,6 @@ export default function Header() {
 
             {user?.role === 'admin' && (
               <>
-                <Link to="/admin" style={{
-                  fontSize: 15,
-                  fontWeight: 600,
-                  color: '#e73725',
-                  textDecoration: 'none'
-                }}>
-                  Admin
-                </Link>
                 <Link to="/admin/dashboard" style={{
                   fontSize: 15,
                   fontWeight: 600,
@@ -324,25 +316,6 @@ export default function Header() {
 
             {user?.role === 'admin' && (
               <>
-                <Link
-                  to="/admin"
-                  onClick={() => setMenuOpen(false)}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 16,
-                    padding: '16px 20px',
-                    background: 'transparent',
-                    borderRadius: 12,
-                    textDecoration: 'none',
-                    color: '#e73725',
-                    fontSize: 18,
-                    fontWeight: 600,
-                    border: '1px solid transparent'
-                  }}
-                >
-                  Admin
-                </Link>
                 <Link
                   to="/admin/dashboard"
                   onClick={() => setMenuOpen(false)}

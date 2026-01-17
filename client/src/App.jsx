@@ -9,7 +9,6 @@ import { AuthProvider } from './context/AuthContext.jsx';
 import Login from './pages/Login.jsx';
 import Register from './pages/Register.jsx';
 import ProtectedRoute from './components/ProtectedRoute.jsx';
-import Admin from './pages/Admin.jsx';
 import AdminDashboard from './pages/AdminDashboard.jsx';
 import { PickProvider } from './context/PickContext.jsx';
 import Upgrade from "./pages/Upgrade.jsx";
@@ -28,15 +27,6 @@ export default function App() {
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
               <Route path="/upgrade" element={<Upgrade />} />
-              <Route
-                path="/admin"
-                element={
-                  <ProtectedRoute role="admin">
-                    <Admin />
-                  </ProtectedRoute>
-                }
-              />
-
               <Route
                 path="/admin/dashboard"
                 element={
