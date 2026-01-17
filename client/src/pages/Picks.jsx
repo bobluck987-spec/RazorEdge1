@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { usePickContext } from '../context/PickContext';
 import { useAuth } from '../context/AuthContext';
-import { Target } from 'lucide-react';
+import { Target, Loader2, AlertCircle, Filter } from 'lucide-react';
 import PickCard from '../components/PickCard';
 
 export default function Picks() {
@@ -29,11 +29,24 @@ export default function Picks() {
         justifyContent: 'center'
       }}>
         <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: 48, marginBottom: 20 }}>⏳</div>
+          <Loader2 style={{ 
+            width: 64, 
+            height: 64, 
+            color: '#e73725', 
+            marginBottom: 20,
+            animation: 'spin 1s linear infinite',
+            margin: '0 auto 20px'
+          }} />
           <h3 style={{ fontSize: 24, fontWeight: 800, color: '#010000' }}>
             Loading picks...
           </h3>
         </div>
+        <style>{`
+          @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+          }
+        `}</style>
       </div>
     );
   }
@@ -51,7 +64,12 @@ export default function Picks() {
         justifyContent: 'center'
       }}>
         <div style={{ textAlign: 'center', maxWidth: 400 }}>
-          <div style={{ fontSize: 48, marginBottom: 20 }}>⚠️</div>
+          <AlertCircle style={{ 
+            width: 64, 
+            height: 64, 
+            color: '#ef4444', 
+            margin: '0 auto 20px'
+          }} />
           <h3 style={{ fontSize: 24, fontWeight: 800, marginBottom: 12, color: '#010000' }}>
             Error Loading Picks
           </h3>
@@ -191,7 +209,12 @@ export default function Picks() {
             borderRadius: 16,
             border: '1px solid #e0e0e0'
           }}>
-            <div style={{ fontSize: 48, marginBottom: 20 }}>📊</div>
+            <Filter style={{ 
+              width: 64, 
+              height: 64, 
+              color: '#e73725', 
+              margin: '0 auto 20px'
+            }} />
             <h3 style={{
               fontSize: 24,
               fontWeight: 800,
